@@ -1,7 +1,7 @@
 {
   "name": "MY TANI",
   "short_name": "MYTANI",
-  "start_url": "index.html",
+"start_url": "/MY-TANI/docs/index.html",
   "display": "standalone",
   "background_color": "#e8f5e1",
   "theme_color": "#2f7d32",
