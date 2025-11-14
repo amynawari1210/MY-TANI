@@ -1,1 +1,43 @@
-https://pastebin.com/raw/9JfWFAzR
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2f7d32">
+  <link rel="manifest" href="manifest.json">
+  <title>MY TANI</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f2f2f2; margin:0; padding:0; }
+    .header { background:#2f7d32; color:white; padding:20px; text-align:center; font-size:28px; }
+    .sub { margin-top:-10px; color:#e1ffe1; font-size:14px; }
+    .menu { padding:20px; display:flex; flex-direction:column; gap:12px; }
+    button {
+      background:#ffffff; border:2px solid #2f7d32; padding:15px;
+      border-radius:10px; font-size:20px; text-align:left;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  MY TANI
+  <div class="sub">Ladang Pintar Di Hujung Jari Anda</div>
+</div>
+
+<div class="menu">
+  <button onclick="alert('Monitor tanaman dibuka')">📡 Monitor Tanaman</button>
+  <button onclick="alert('Monitor drone dibuka')">🚁 Monitor Drone</button>
+  <button onclick="alert('Pam air dikawal')">💧 Kawal Pam Air</button>
+  <button onclick="alert('Suhu & kelembapan dibaca')">🌡 Suhu & Kelembapan</button>
+  <button onclick="alert('Stok tanaman dibuka')">📦 Stok Tanaman</button>
+  <button onclick="alert('Menu jualan dibuka')">🛒 Jualan</button>
+</div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
+
+</body>
+</html>
