@@ -1,375 +1,227 @@
 <!doctype html>
 <html lang="ms">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<meta name="theme-color" content="#2f7d32" />
-<link rel="manifest" href="manifest.json" />
-<title>MY TANI</title>
-<style>
-/* ---------- base / reset ---------- */
-*{box-sizing:border-box}
-body{margin:0;font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial; background:#f2f2f2;color:#0b2540}
-a{color:inherit}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#2f7d32" />
+  <link rel="manifest" href="manifest.json" />
+  <title>MY TANI</title>
 
-/* ---------- header ---------- */
-.header{background:#2f7d32;color:#fff;padding:26px 16px 22px;text-align:center}
-.title{font-size:28px;font-weight:800;letter-spacing:1px}
-.subtitle{font-size:14px;opacity:.95;margin-top:6px}
-
-/* ---------- container ---------- */
-.container{padding:14px;max-width:760px;margin:0 auto}
-
-/* ---------- buttons / nav ---------- */
-.btn{display:block;width:100%;background:#fff;border:3px solid #2f7d32;border-radius:14px;padding:18px 16px;margin-bottom:14px;text-align:left;font-size:18px;color:#2f7d32;font-weight:700;box-shadow:0 6px 14px rgba(0,0,0,0.04)}
-.btn small{display:block;font-weight:400;color:#666;margin-top:6px}
-.back-btn{border:3px dashed #2f7d32;padding:18px;border-radius:14px;color:#2f7d32;font-weight:700;margin-bottom:14px;cursor:pointer}
-
-/* ---------- cards / sensors ---------- */
-.sensor-card{background:#fff;border-radius:12px;padding:14px;margin-bottom:14px;box-shadow:0 8px 24px rgba(0,0,0,0.04)}
-.card-title{font-size:20px;font-weight:800;margin-bottom:6px}
-.title{font-weight:800;font-size:20px;color:#0b2540}
-.subtitle{color:#666;font-size:13px;margin-bottom:10px}
-.value-badge{float:right;background:#2f7d32;color:#fff;padding:8px 12px;border-radius:12px;font-weight:800}
-
-/* canvas / chart container */
-canvas{width:100%;height:70px;display:block}
-.chart{padding:12px 0}
-
-/* small spacing at bottom so footer not overlap */
-.footer-spacer{height:36px}
-
-/* footer */
-.footer{padding:18px;text-align:center;color:#666;font-size:14px;margin-top:6px}
-
-/* small screen tweaks */
-@media(min-width:700px){ .container{padding:24px} }
-</style>
+  <style>
+    :root{
+      --accent:#2f7d32;
+      --card:#fff;
+      --bg:#f2f2f2;
+      --muted:#666;
+      --text:#0b2540;
+      --green-soft: #e8f5e1;
+    }
+    html,body{margin:0;padding:0;font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); color:var(--text);}
+    .header{background:var(--accent); color:#fff; padding:18px 16px; text-align:center}
+    .title{font-weight:800; font-size:28px; letter-spacing:1px}
+    .subtitle{font-size:13px; opacity:0.95}
+    .container{max-width:760px;margin:14px auto;padding:0 14px}
+    .back-btn{border:3px dashed #2f7d32;border-radius:12px;padding:16px; color:var(--accent); display:inline-block;margin-bottom:14px; cursor:pointer}
+    .card{background:var(--card); border-radius:12px;padding:14px;margin-bottom:14px; box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .big-btn{background: #cfecca; padding:18px;text-align:center;border-radius:6px;font-weight:700;color:var(--text);cursor:pointer}
+    .big-btn.small{padding:10px;font-size:13px}
+    .footer{padding:28px 0;text-align:center;color:var(--muted)}
+    /* listing buttons (home) */
+    .home-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:10px}
+    .home-btn{background: #dff2d9;border-radius:8px;padding:14px;text-align:center;font-weight:700;cursor:pointer}
+    .home-stats{background:#fff;border-radius:10px;padding:18px;font-weight:700; box-shadow:0 6px 18px rgba(0,0,0,0.05)}
+    /* charts */
+    .chart{padding:8px 12px;}
+    canvas{width:100%; height:70px; display:block;}
+    .badge{background:var(--accent);color:#fff;padding:6px 10px;border-radius:12px;float:right;font-weight:700}
+    /* screens (show/hide) */
+    .screen{display:none}
+    .active{display:block}
+    /* back icon small */
+    .back-icon{font-size:20px;margin-right:6px;vertical-align:middle}
+    /* mobile adjustments */
+    @media(min-width:800px){
+      .container{padding:0 32px}
+      canvas{height:90px}
+    }
+  </style>
 </head>
 <body data-theme="green">
+  <div class="header">
+    <div class="title">MY TANI</div>
+    <div class="subtitle">Ladang Pintar Di Hujung Jari Anda</div>
+  </div>
 
-<div class="header">
-<div class="title">MY TANI</div>
-<div class="subtitle">Ladang Pintar Di Hujung Jari Anda</div>
-</div>
+  <div class="container">
+    <!-- BACK (shared) -->
+    <div id="backWrap" class="back-btn" onclick="show('home')">
+      <span class="back-icon">←</span> Kembali
+    </div>
 
-<div class="container">
+    <!-- HOME -->
+    <div id="home" class="screen active">
+      <div class="card home-stats">
+        <div style="font-size:18px;font-weight:800">Dashboard Ringkas</div>
+      </div>
 
-<!-- MAIN SCREEN -->
-<div id="main" class="screen active">
-<div class="btn" onclick="show('dashboard')">📡 Monitor Tanaman <small>Tap untuk lihat ringkasan</small></div>
-<div class="btn" onclick="show('drone')">🚁 Monitor Drone <small>Animasi drone & telemetry</small></div>
-<div class="btn" onclick="show('pump')">💧 Kawal Pam Air <small>Tekan ON/OFF untuk kawal</small></div>
-<div class="btn" onclick="show('sensor')">🌡️ Suhu & Kelembapan <small>Graf sensor live</small></div>
-<div class="btn" onclick="show('stock')">📦 Stok Tanaman <small>Table & graf</small></div>
-<div class="btn" onclick="show('sales')">🛒 Jualan <small>Invoice card & ringkasan</small></div>
+      <div class="home-grid">
+        <div class="home-btn" onclick="show('monitor-tanaman')">Jenis Sayuran</div>
+        <div class="home-btn" onclick="show('monitor-drone')">Jenis Buah-buahan</div>
+        <div class="home-btn" onclick="show('sensor')">Kelembapan Tanah</div>
+        <div class="home-btn" onclick="show('pump')">PH Air</div>
+        <div class="home-btn" onclick="show('sales')">Siraman Baja</div>
+        <div class="home-btn" onclick="show('stock')">Stok Tanaman</div>
+        <div class="home-btn" onclick="show('health')">Kesihatan Tanaman</div>
+        <div class="home-btn" onclick="show('sales')">Rekod Belian & Jualan</div>
+      </div>
+    </div>
 
-<div style="height:12px"></div>
-<div class="footer">© 2025 Hana AgroTech Sdn. Bhd.</div>
-</div>
+    <!-- MONITOR TANAMAN -->
+    <div id="monitor-tanaman" class="screen card">
+      <div style="margin-bottom:10px;font-weight:800;font-size:20px">Dashboard Ringkas</div>
 
-<!-- DASHBOARD RINGKAS (for plants summary) -->
-<div id="dashboard" class="screen" style="display:none">
-<div class="back-btn" onclick="show('main')">← Kembali</div>
+      <div class="card chart">
+        <div style="font-weight:800">Suhu (°C) <span class="badge" id="tempBadge">28.4°C</span></div>
+        <canvas id="tempChart"></canvas>
+      </div>
 
-<div class="sensor-card">
-<div class="title">Dashboard Ringkas</div>
-<div class="chart">
-<div style="display:flex;justify-content:space-between;align-items:center">
-<div>
-<div style="font-size:13px;color:#666">Suhu</div>
-<div style="font-weight:800;font-size:22px" id="dashTemp">--°C</div>
-</div>
-<div style="text-align:right">
-<div style="font-size:13px;color:#666">Status Pam</div>
-<div style="font-weight:800;font-size:22px;color:#2f7d32">ON</div>
-</div>
-</div>
-</div>
-</div>
+      <div class="card chart">
+        <div style="font-weight:800">Kelembapan (%) <span class="badge" id="humBadge">63.2%</span></div>
+        <canvas id="humChart"></canvas>
+      </div>
+    </div>
 
-<div class="sensor-card">
-<div class="title">Ringkasan Tanah & Air</div>
-<div style="margin-top:8px;color:#666">Monitor tanah, kelembapan & cahaya</div>
-</div>
+    <!-- MONITOR DRONE -->
+    <div id="monitor-drone" class="screen card">
+      <div style="font-weight:800;font-size:20px;margin-bottom:10px">Drone</div>
+      <div class="card">Animasi drone & telemetry (contoh)</div>
+    </div>
 
-<div class="footer">© 2025 Hana AgroTech Sdn. Bhd.</div>
-</div>
+    <!-- PUMP CONTROL -->
+    <div id="pump" class="screen card">
+      <div style="font-weight:800;font-size:20px;margin-bottom:10px">Kawal Pam Air</div>
+      <div style="display:flex;gap:12px">
+        <button id="pumpBtn" class="big-btn" onclick="togglePump()">ON</button>
+        <div style="flex:1" class="card">
+          Status Pam: <span id="pumpStatus">ON</span><br/><small class="muted">Tekan untuk togol</small>
+        </div>
+      </div>
+    </div>
 
-<!-- MONITOR TANAMAN (full sensor charts) -->
-<div id="plants" class="screen" style="display:none">
-<div class="back-btn" onclick="show('main')">← Kembali</div>
+    <!-- SENSOR (suhu/kelembapan page simplified) -->
+    <div id="sensor" class="screen card">
+      <div style="font-weight:800;font-size:20px;margin-bottom:10px">Sensor</div>
+      <div class="card">Data sensor ringkas (contoh) — suhu & kelembapan dipaparkan di halaman lain juga.</div>
+    </div>
 
-<div class="sensor-card">
-<div style="overflow:hidden">
-<div class="title" style="display:inline-block">Suhu (°C)</div>
-<div class="value-badge" id="tempNow2">--°C</div>
-</div>
-<div class="subtitle">Updated setiap 3s</div>
-<div class="chart"><canvas id="tempChart2"></canvas></div>
-</div>
+    <!-- STOCK -->
+    <div id="stock" class="screen card">
+      <div style="font-weight:800;font-size:20px;margin-bottom:10px">Stok Tanaman</div>
+      <div id="stockTable" class="card">Tiada data (contoh).</div>
+    </div>
 
-<div class="sensor-card">
-<div style="overflow:hidden">
-<div class="title" style="display:inline-block">Kelembapan (%)</div>
-<div class="value-badge" id="humNow2">--%</div>
-</div>
-<div class="subtitle">Updated setiap 3s</div>
-<div class="chart"><canvas id="humChart2"></canvas></div>
-</div>
+    <!-- SALES -->
+    <div id="sales" class="screen card">
+      <div style="font-weight:800;font-size:20px;margin-bottom:10px">Jualan</div>
+      <div class="card">Rekod belian & jualan — contoh ringkas.</div>
+    </div>
 
-<div class="footer">© 2025 Hana AgroTech Sdn. Bhd.</div>
-</div>
+    <!-- HEALTH -->
+    <div id="health" class="screen card">
+      <div style="font-weight:800;font-size:20px;margin-bottom:10px">Kesihatan Tanaman</div>
+      <div class="card">Panduan ringkas — contoh.</div>
+    </div>
 
-<!-- DRONE -->
-<div id="drone" class="screen" style="display:none">
-<div class="back-btn" onclick="show('main')">← Kembali</div>
+    <div class="footer">© 2025 Hana AgroTech Sdn. Bhd.</div>
+  </div>
 
-<div class="sensor-card">
-<div style="overflow:hidden">
-<div class="title">Ketinggian</div>
-<div class="value-badge" id="altNow">-- m</div>
-</div>
-<div class="chart"><canvas id="altChart"></canvas></div>
-</div>
+  <script>
+    // Navigation: show screen by id
+    function show(id){
+      document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+      const el = document.getElementById(id);
+      if(el) el.classList.add('active');
+      // hide back button on home
+      document.getElementById('backWrap').style.display = (id === 'home') ? 'none' : 'inline-block';
+      // if showing monitor-tanaman, (re)draw charts
+      if(id==='monitor-tanaman'){ drawCharts(); }
+    }
 
-<div class="sensor-card">
-<div style="overflow:hidden">
-<div class="title">Kelajuan</div>
-<div class="value-badge" id="speedNow">-- m/s</div>
-</div>
-<div class="chart"><canvas id="speedChart"></canvas></div>
-</div>
+    // pump toggle
+    let pumpOn = true;
+    function togglePump(){
+      pumpOn = !pumpOn;
+      document.getElementById('pumpBtn').textContent = pumpOn ? 'ON' : 'OFF';
+      document.getElementById('pumpStatus').textContent = pumpOn ? 'ON' : 'OFF';
+      // simulate action (alert optional)
+      // alert('Pam ' + (pumpOn ? 'HIDUP' : 'MATI'));
+    }
 
-<div class="sensor-card">
-<div style="overflow:hidden">
-<div class="title">Bateri</div>
-<div class="value-badge" id="batNow">--%</div>
-</div>
-<div class="chart"><canvas id="batChart"></canvas></div>
-</div>
+    // small chart draw helper (vanilla canvas)
+    function drawLine(canvas, data, color){
+      if(!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.offsetWidth;
+      const h = canvas.offsetHeight;
+      canvas.width = w*devicePixelRatio;
+      canvas.height = h*devicePixelRatio;
+      ctx.scale(devicePixelRatio, devicePixelRatio);
+      ctx.clearRect(0,0,w,h);
+      // fill area
+      const max = Math.max(...data);
+      const min = Math.min(...data);
+      ctx.beginPath();
+      data.forEach((v,i)=>{
+        const x = i/(data.length-1)*(w-8) + 4;
+        const y = h - ((v - min) / (max - min || 1))*(h-12) - 6;
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      });
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = color;
+      ctx.stroke();
+      // fill under curve
+      ctx.lineTo(w-4,h-6);
+      ctx.lineTo(4,h-6);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(47,125,50,0.09)';
+      ctx.fill();
+    }
 
-<div class="footer">© 2025 Hana AgroTech Sdn. Bhd.</div>
-</div>
+    // sample data & periodic update
+    let tempData = [25,26,27,27,28,28,29];
+    let humData = [55,58,60,62,63,61,60];
 
-<!-- PUMP (ganti bahagian lama) -->
-<div id="pump" class="screen" style="display:none">
-<div class="back-btn" onclick="show('main')">← Kembali</div>
+    function tickSensors(){
+      // random walk
+      tempData.push(Math.max(18, Math.min(40, Math.round((tempData[tempData.length-1] + (Math.random()-0.5)*1.8)*10)/10 )));
+      humData.push(Math.max(20, Math.min(100, Math.round((humData[humData.length-1] + (Math.random()-0.5)*2.5)*10)/10 )));
+      if(tempData.length>12) tempData.shift();
+      if(humData.length>12) humData.shift();
+      // update badges
+      document.getElementById('tempBadge').textContent = tempData[tempData.length-1] + '°C';
+      document.getElementById('humBadge').textContent = humData[humData.length-1] + '%';
+      drawCharts();
+    }
 
-<div class="sensor-card">
-<div style="display:flex; justify-content:space-between; align-items:center">
-<div>
-<div class="title">Kawal Pam Air</div>
-<div class="subtitle">Kawalan manual pam</div>
-</div>
-<div id="pumpStatus" style="font-weight:800; color:#2f7d32; background:#e9f4ea; padding:8px 12px; border-radius:10px">
-OFF
-</div>
-</div>
+    function drawCharts(){
+      drawLine(document.getElementById('tempChart'), tempData, '#2f7d32');
+      drawLine(document.getElementById('humChart'), humData, '#2f7d32');
+    }
 
-<div style="margin-top:12px; display:flex; gap:10px">
-<button id="btnPumpOn" class="btn" style="flex:1; background:#2f7d32;color:#fff;border:none;padding:12px" onclick="pump('ON')">
-Hidupkan
-</button>
-<button id="btnPumpOff" class="btn" style="flex:1; background:#fff;color:#2f7d32;border:3px solid #2f7d32;padding:12px" onclick="pump('OFF')">
-Matikan
-</button>
-</div>
-</div>
+    // init
+    window.addEventListener('load', ()=>{
+      // initial state: hide back on home
+      show('home');
+      // start ticking
+      setInterval(tickSensors, 3000);
+      tickSensors();
+    });
 
-<div class="footer">© 2025 Hana AgroTech Sdn. Bhd.</div>
-</div>
-<!-- SENSOR simple charts (alternate) -->
-<div id="sensor" class="screen" style="display:none">
-<div class="back-btn" onclick="show('main')">← Kembali</div>
-
-<div class="sensor-card">
-<div style="overflow:hidden">
-<div class="title">Suhu (°C)</div>
-<div class="value-badge" id="tempNow">--°C</div>
-</div>
-<div class="subtitle">Updated setiap 3s</div>
-<div class="chart"><canvas id="tempChart"></canvas></div>
-</div>
-
-<div class="sensor-card">
-<div style="overflow:hidden">
-<div class="title">Kelembapan (%)</div>
-<div class="value-badge" id="humNow">--%</div>
-</div>
-<div class="subtitle">Updated setiap 3s</div>
-<div class="chart"><canvas id="humChart"></canvas></div>
-</div>
-
-<div class="footer">© 2025 Hana AgroTech Sdn. Bhd.</div>
-</div>
-
-<!-- STOCK, SALES placeholders (kept simple) -->
-<div id="stock" class="screen" style="display:none">
-<div class="back-btn" onclick="show('main')">← Kembali</div>
-<div class="sensor-card"><div class="title">Stok Tanaman</div></div>
-<div class="footer">© 2025 Hana AgroTech Sdn. Bhd.</div>
-</div>
-
-<div id="sales" class="screen" style="display:none">
-<div class="back-btn" onclick="show('main')">← Kembali</div>
-<div class="sensor-card"><div class="title">Jualan</div></div>
-<div class="footer">© 2025 Hana AgroTech Sdn. Bhd.</div>
-</div>
-
-</div> <!-- /container -->
-
-<script>
-/* ---------- navigation ---------- */
-function show(id){
-document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
-const el = document.getElementById(id);
-if(el) el.style.display = 'block';
-// small scroll to top for mobile
-window.scrollTo({top:0,behavior:'smooth'});
-}
-
-/* ---------- theme (simple) ---------- */
-function setTheme(v){
-document.body.setAttribute('data-theme', v);
-// more theme handling could go here
-}
-
-/* ---------- sensor simulation data ---------- */
-let tempData = [25,26,27,27,28,28,29];
-let humData = [60,61,62,63,62,61,60];
-
-/* dashboard / sensor rendering helpers */
-function drawLine(canvas, data, color){
-if(!canvas) return;
-const ctx = canvas.getContext('2d');
-const w = canvas.width = canvas.offsetWidth;
-const h = canvas.height = 70;
-ctx.clearRect(0,0,w,h);
-ctx.lineWidth = 2;
-ctx.strokeStyle = color;
-const max = Math.max(...data), min = Math.min(...data);
-ctx.beginPath();
-data.forEach((v,i)=>{
-const x = i/(data.length-1 || 1)*(w-10)+5;
-const y = h - ((v-min)/( (max-min) || 1))*(h-20) - 10;
-if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-});
-ctx.stroke();
-// fill area
-ctx.lineTo(w-5,h-6);
-ctx.lineTo(5,h-6);
-ctx.closePath();
-ctx.fillStyle = color + "22";
-ctx.fill();
-
-// points
-ctx.fillStyle = color;
-data.forEach((v,i)=>{
-const x = i/(data.length-1 || 1)*(w-10)+5;
-const y = h - ((v-min)/( (max-min) || 1))*(h-20) - 10;
-ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill();
-});
-}
-
-// lighter separate function for second charts (same behaviour)
-function drawLine2(canvas, data, color){ drawLine(canvas,data,color); }
-
-/* ---------- sensor tick (main) ---------- */
-function tickSensors(){
-// push new random-ish values
-let lastT = tempData[tempData.length-1] || 26;
-let lastH = humData[humData.length-1] || 60;
-tempData.push( Math.max(15, Math.min(40, +(lastT + (Math.random()-0.5)*1.6).toFixed(1))) );
-humData.push( Math.max(10, Math.min(100, +(lastH + (Math.random()-0.5)*2.4).toFixed(1))) );
-
-if(tempData.length>12) tempData.shift();
-if(humData.length>12) humData.shift();
-
-// update single sensor page + dashboard
-document.getElementById('tempNow').textContent = tempData[tempData.length-1].toFixed(1) + "°C";
-document.getElementById('humNow').textContent = humData[humData.length-1].toFixed(1) + "%";
-document.getElementById('dashTemp').textContent = tempData[tempData.length-1].toFixed(1) + "°C";
-
-// monitor tanaman (second set)
-if(document.getElementById('tempNow2')){
-document.getElementById('tempNow2').textContent = tempData[tempData.length-1].toFixed(1)+"°C";
-document.getElementById('humNow2').textContent = humData[humData.length-1].toFixed(1)+"%";
-}
-
-// draw charts (safe guard)
-try{
-drawLine(document.getElementById('tempChart'), tempData, '#2e7d32');
-drawLine(document.getElementById('humChart'), humData, '#2e7d32');
-drawLine2(document.getElementById('tempChart2'), tempData, '#2e7d32');
-drawLine2(document.getElementById('humChart2'), humData, '#2e7d32');
-}catch(e){ /* ignore */ }
-}
-
-setInterval(tickSensors, 3000);
-window.addEventListener('load', ()=>{
-setTimeout(()=>{ tickSensors(); }, 200);
-});
-
-/* ---------- drone simulation ---------- */
-let altData = [120,125,130,128,135,140];
-let speedData = [10,11,9,12,11,10];
-let batData = [95,93,92,90,89];
-
-function tickDrone(){
-// random walk
-const lastAlt = altData[altData.length-1] || 120;
-altData.push(Math.max(5, Math.min(500, +(lastAlt + (Math.random()-0.5)*6).toFixed(0))));
-if(altData.length>12) altData.shift();
-
-const lastSp = speedData[speedData.length-1] || 10;
-speedData.push(Math.max(0, +(lastSp + (Math.random()-0.5)*2).toFixed(1)));
-if(speedData.length>12) speedData.shift();
-
-const lastBat = batData[batData.length-1] || 95;
-batData.push(Math.max(0, +(lastBat - Math.random()*0.8).toFixed(0)));
-if(batData.length>12) batData.shift();
-
-// update UI
-if(document.getElementById('altNow')) document.getElementById('altNow').textContent = altData[altData.length-1] + " m";
-if(document.getElementById('speedNow')) document.getElementById('speedNow').textContent = speedData[speedData.length-1] + " m/s";
-if(document.getElementById('batNow')) document.getElementById('batNow').textContent = batData[batData.length-1] + "%";
-
-try{
-drawLine(document.getElementById('altChart'), altData, '#2e7d32');
-drawLine(document.getElementById('speedChart'), speedData, '#2e7d32');
-drawLine(document.getElementById('batChart'), batData, '#2e7d32');
-}catch(e){}
-}
-setInterval(tickDrone, 1200);
-
-/* ---------- pump control (demo) ---------- */
-function pump(state){
-alert('Pam ' + state);
-// here you would call your API to toggle the real pump
-}
-
-/* ---------- small helpers / responsive redraw on resize ---------- */
-window.addEventListener('resize', ()=>{
-// redraw charts on resize
-try{
-drawLine(document.getElementById('tempChart'), tempData, '#2e7d32');
-drawLine(document.getElementById('humChart'), humData, '#2e7d32');
-drawLine2(document.getElementById('tempChart2'), tempData, '#2e7d32');
-drawLine2(document.getElementById('humChart2'), humData, '#2e7d32');
-drawLine(document.getElementById('altChart'), altData, '#2e7d32');
-drawLine(document.getElementById('speedChart'), speedData, '#2e7d32');
-drawLine(document.getElementById('batChart'), batData, '#2e7d32');
-}catch(e){}
-});
-
-/* ---------- register service worker ---------- */
-if('serviceWorker' in navigator){
-navigator.serviceWorker.register('sw.js').then(()=> {
-console.log('sw registered');
-}).catch(e=> console.warn('sw fail', e));
-}
-</script>
-
+    // register service worker
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.register('sw.js').catch(e=>console.log('sw fail',e));
+    }
+  </script>
 </body>
 </html>
