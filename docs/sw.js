@@ -71,15 +71,24 @@ return response;
 return;
 }
 
-// 2) API requests - network-first then cache
+// 2) API requests – network-first with stale-while-revalidate
 if (isSameOrigin && url.pathname.startsWith('/api/')) {
 event.respondWith(
-fetch(req).then(networkResponse => {
-// cache API response (optional)
-const clone = networkResponse.clone();
-caches.open(RUNTIME).then(cache => cache.put(req, clone));
+caches.match(req).then(cached => {
+
+const fetchPromise = fetch(req)
+.then(networkResponse => {
+const copy = networkResponse.clone();
+caches.open(RUNTIME).then(cache => cache.put(req, copy));
 return networkResponse;
-}).catch(() => caches.match(req))
+})
+.catch(() => cached);
+
+// If cached exists → return cached immediately, update in background.
+// If no cache → wait for network.
+return cached || fetchPromise;
+
+})
 );
 return;
 }
