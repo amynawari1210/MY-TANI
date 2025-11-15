@@ -1,183 +1,209 @@
 <!doctype html>
 <html lang="ms">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#2f7d32" />
-  <link rel="manifest" href="./manifest.json">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="MY TANI">
-  <title>MY TANI</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="theme-color" content="#2f7d32" />
+<link rel="manifest" href="./manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MY TANI">
+<title>MY TANI</title>
 
-  <style>
-    :root{
-      --bg:#f2f6f2;
-      --accent:#2f7d32;
-      --card:#ffffff;
-      --text:#0b2f1a;
-      --muted:#6b6b6b;
-      --radius:12px;
-      --gap:14px;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
-    .header{background:linear-gradient(180deg,var(--accent),#1f6a2a);color:#fff;padding:20px 16px;text-align:center}
-    .title{font-size:26px;font-weight:800;letter-spacing:0.6px}
-    .subtitle{font-size:13px;opacity:0.95;margin-top:6px}
+<style>
+:root{
+--bg:#f2f6f2;
+--accent:#2f7d32;
+--card:#ffffff;
+--text:#0b2f1a;
+--muted:#6b6b6b;
+--radius:12px;
+--gap:14px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+.header{background:linear-gradient(180deg,var(--accent),#1f6a2a);color:#fff;padding:20px 16px;text-align:center}
+.title{font-size:26px;font-weight:800;letter-spacing:0.6px}
+.subtitle{font-size:13px;opacity:0.95;margin-top:6px}
 
-    .container{padding:16px;max-width:880px;margin:0 auto}
-    .back-btn{display:inline-block;padding:12px 14px;border-radius:12px;border:2px dashed rgba(47,125,50,0.28);color:var(--accent);font-weight:700;margin-bottom:12px;cursor:pointer;background:#fff}
+.container{padding:16px;max-width:880px;margin:0 auto}
+.back-btn{
+display:inline-block;padding:12px 14px;border-radius:12px;border:2px dashed rgba(47,125,50,0.28);color:var(--accent);font-weight:700;margin-bottom:12px;cursor:pointer;background:#fff;
+-webkit-appearance:none; appearance:none;
+}
 
-    .card{background:var(--card);border-radius:12px;padding:12px;margin-bottom:14px;box-shadow:0 8px 20px rgba(0,0,0,0.06);position:relative}
-    .card h3{margin:0;font-size:18px;font-weight:800}
-    .muted{color:var(--muted);font-size:13px}
-    .badge{position:absolute;right:14px;top:16px;background:var(--accent);color:#fff;padding:8px 12px;border-radius:10px;font-weight:700}
+.card{background:var(--card);border-radius:12px;padding:12px;margin-bottom:14px;box-shadow:0 8px 20px rgba(0,0,0,0.06);position:relative}
+.card h3{margin:0;font-size:18px;font-weight:800}
+.muted{color:var(--muted);font-size:13px}
+.badge{position:absolute;right:14px;top:16px;background:var(--accent);color:#fff;padding:8px 12px;border-radius:10px;font-weight:700}
 
-    .chart{padding:12px 0 4px 0}
-    canvas{width:100%;height:70px;display:block}
+.chart{padding:12px 0 4px 0}
+canvas{width:100%;height:70px;display:block}
 
-    .footer{padding:16px 8px;text-align:center;color:var(--muted);font-size:14px}
+.footer{padding:16px 8px;text-align:center;color:var(--muted);font-size:14px}
 
-    .btn{display:block;width:100%;text-align:left;background:transparent;border:2px solid var(--accent);border-radius:12px;padding:14px;font-size:18px;color:var(--accent);font-weight:700;margin-bottom:12px;cursor:pointer}
-    .btn small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+.btn{display:block;width:100%;text-align:left;background:transparent;border:2px solid var(--accent);border-radius:12px;padding:14px;font-size:18px;color:var(--accent);font-weight:700;margin-bottom:12px;cursor:pointer}
+.btn small{display:block;font-weight:400;color:var(--muted);font-size:13px}
 
-    @media (max-width:480px){
-      .title{font-size:22px}
-    }
-  </style>
+@media (max-width:480px){
+.title{font-size:22px}
+}
+</style>
 </head>
 
 <body>
-  <div class="header">
-    <div class="title">MY TANI</div>
-    <div class="subtitle">Ladang Pintar Di Hujung Jari Anda</div>
-  </div>
+<div class="header">
+<div class="title">MY TANI</div>
+<div class="subtitle">Ladang Pintar Di Hujung Jari Anda</div>
+</div>
 
-  <div class="container">
-    <div class="back-btn" onclick="history.back()">← Kembali</div>
+<div class="container">
+<!-- Robust back button -->
+<button class="back-btn" id="backBtn" aria-label="Kembali" onclick="goBack()">← Kembali</button>
 
-    <!-- Suhu -->
-    <div class="card" id="tempCard">
-      <h3>Suhu (°C)</h3>
-      <div class="muted">Updated setiap 3 saat</div>
-      <div class="badge" id="tempNow">--°C</div>
-      <div class="chart"><canvas id="tempCanvas" aria-label="Graf suhu"></canvas></div>
-    </div>
+<!-- Suhu Card -->
+<div class="card" id="tempCard">
+<h3>Suhu (°C)</h3>
+<div class="muted">Updated setiap 3 saat</div>
+<div class="badge" id="tempNow">--°C</div>
+<div class="chart"><canvas id="tempCanvas" aria-label="Graf suhu"></canvas></div>
+</div>
 
-    <!-- Kelembapan -->
-    <div class="card" id="humCard">
-      <h3>Kelembapan (%)</h3>
-      <div class="muted">Updated setiap 3 saat</div>
-      <div class="badge" id="humNow">--%</div>
-      <div class="chart"><canvas id="humCanvas" aria-label="Graf kelembapan"></canvas></div>
-    </div>
+<!-- Kelembapan Card -->
+<div class="card" id="humCard">
+<h3>Kelembapan (%)</h3>
+<div class="muted">Updated setiap 3 saat</div>
+<div class="badge" id="humNow">--%</div>
+<div class="chart"><canvas id="humCanvas" aria-label="Graf kelembapan"></canvas></div>
+</div>
 
-    <div class="footer">© 2025 Hana AgroTech Sdn. Bhd.</div>
-  </div>
+<div class="footer">© 2025 Hana AgroTech Sdn. Bhd.</div>
+</div>
 
 <script>
-/* Lightweight sparkline drawer (retina-ready) */
+/* ---------- goBack() robust function ---------- */
+function goBack(){
+try{
+// If browser history exists, go back
+if (history.length > 1) {
+history.back();
+return;
+}
+// If referrer is same site, try back
+if (document.referrer && document.referrer.indexOf(location.hostname) !== -1) {
+history.back();
+return;
+}
+// fallback to root index
+location.href = './index.html';
+} catch(e){
+location.href = './index.html';
+}
+}
+
+/* ---------- helper: hex to rgba ---------- */
 function hexToRGBA(hex, a){
-  hex = hex.replace('#','');
-  if(hex.length===3) hex = hex.split('').map(c=>c+c).join('');
-  const r = parseInt(hex.substr(0,2),16);
-  const g = parseInt(hex.substr(2,2),16);
-  const b = parseInt(hex.substr(4,2),16);
-  return `rgba(${r},${g},${b},${a})`;
+hex = hex.replace('#','');
+if(hex.length===3) hex = hex.split('').map(c=>c+c).join('');
+const r = parseInt(hex.substr(0,2),16);
+const g = parseInt(hex.substr(2,2),16);
+const b = parseInt(hex.substr(4,2),16);
+return `rgba(${r},${g},${b},${a})`;
 }
 
+/* ---------- drawSparkline (retina-ready) ---------- */
 function drawSparkline(canvas, data, color){
-  if(!canvas) return;
-  // ensure element has width
-  const W = Math.max(100,canvas.clientWidth);
-  const H = 70;
-  const DPR = window.devicePixelRatio || 1;
-  canvas.width = Math.round(W * DPR);
-  canvas.height = Math.round(H * DPR);
-  canvas.style.height = H + 'px';
-  const ctx = canvas.getContext('2d');
-  ctx.setTransform(DPR,0,0,DPR,0,0); // high-DPI scale
+if(!canvas) return;
+const W = Math.max(120, canvas.clientWidth);
+const H = 70;
+const DPR = window.devicePixelRatio || 1;
+canvas.width = Math.round(W * DPR);
+canvas.height = Math.round(H * DPR);
+canvas.style.height = H + 'px';
+const ctx = canvas.getContext('2d');
+ctx.setTransform(DPR,0,0,DPR,0,0);
+ctx.clearRect(0,0,W,H);
+if(!data || data.length===0) return;
 
-  ctx.clearRect(0,0,W,H);
-  if(!data || data.length===0) return;
+const pad = 8;
+const w = W - pad*2;
+const h = H - pad*2;
+const min = Math.min(...data);
+const max = Math.max(...data);
+const range = (max - min) || 1;
 
-  const pad = 8;
-  const w = W - pad*2;
-  const h = H - pad*2;
-  const min = Math.min(...data);
-  const max = Math.max(...data);
-  const range = (max - min) || 1;
+// build points
+const pts = data.map((v,i)=>{
+const x = pad + (i/(data.length-1||1))*w;
+const y = pad + (1 - (v - min)/range)*h;
+return {x,y};
+});
 
-  // compute points
-  const pts = data.map((v,i)=>{
-    const x = pad + (i/(data.length-1||1))*w;
-    const y = pad + (1 - (v - min)/range)*h;
-    return {x,y};
-  });
+// fill area
+ctx.beginPath();
+ctx.moveTo(pts[0].x, pts[0].y);
+for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x, pts[i].y);
+ctx.lineTo(pad + w, pad + h);
+ctx.lineTo(pad, pad + h);
+ctx.closePath();
+ctx.fillStyle = hexToRGBA(color, 0.12);
+ctx.fill();
 
-  // fill area
-  ctx.beginPath();
-  ctx.moveTo(pts[0].x, pts[0].y);
-  for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x, pts[i].y);
-  ctx.lineTo(pad + w, pad + h);
-  ctx.lineTo(pad, pad + h);
-  ctx.closePath();
-  ctx.fillStyle = hexToRGBA(color, 0.12);
-  ctx.fill();
+// stroke
+ctx.beginPath();
+ctx.moveTo(pts[0].x, pts[0].y);
+for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x, pts[i].y);
+ctx.strokeStyle = color;
+ctx.lineWidth = 2;
+ctx.stroke();
 
-  // stroke
-  ctx.beginPath();
-  ctx.moveTo(pts[0].x, pts[0].y);
-  for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x, pts[i].y);
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = color;
-  ctx.stroke();
-
-  // end dot
-  const last = pts[pts.length-1];
-  ctx.beginPath();
-  ctx.fillStyle = color;
-  ctx.arc(last.x, last.y, 3, 0, Math.PI*2);
-  ctx.fill();
+// end dot
+const last = pts[pts.length-1];
+ctx.beginPath();
+ctx.fillStyle = color;
+ctx.arc(last.x, last.y, 3, 0, Math.PI*2);
+ctx.fill();
 }
 
-/* sensor simulation + update loop */
-let tempData = [25,26,26.5,27,26.8];
-let humData  = [60,61,60.5,62,61];
+/* ---------- sensor simulation ---------- */
+let tempData = [25.0,25.6,26.1,26.5,26.2];
+let humData = [60,60.5,61,61.2,61];
 
 const tempCanvas = document.getElementById('tempCanvas');
 const humCanvas = document.getElementById('humCanvas');
-const tempNow = document.getElementById('tempNow');
-const humNow  = document.getElementById('humNow');
+const tempNowEl = document.getElementById('tempNow');
+const humNowEl = document.getElementById('humNow');
 
 function tickSensors(){
-  const lt = tempData[tempData.length-1] || 26;
-  const lh = humData[humData.length-1] || 61;
-  const nt = +(lt + (Math.random()-0.5)*0.8).toFixed(1);
-  const nh = Math.max(20, Math.min(100, Math.round(lh + (Math.random()-0.5)*2)));
-  tempData.push(nt); humData.push(nh);
-  if(tempData.length>20) tempData.shift();
-  if(humData.length>20) humData.shift();
+const lastT = tempData[tempData.length-1] || 26;
+const lastH = humData[humData.length-1] || 61;
+const nextT = +(lastT + (Math.random()-0.5)*0.7).toFixed(1);
+const nextH = Math.max(20, Math.min(100, Math.round(lastH + (Math.random()-0.5)*2)));
+tempData.push(nextT);
+humData.push(nextH);
+if(tempData.length>20) tempData.shift();
+if(humData.length>20) humData.shift();
 
-  tempNow.textContent = nt.toFixed(1) + '°C';
-  humNow.textContent = nh + '%';
+tempNowEl.textContent = nextT.toFixed(1) + '°C';
+humNowEl.textContent = nextH + '%';
 
-  drawSparkline(tempCanvas, tempData, '#2f7d32');
-  drawSparkline(humCanvas, humData, '#2f7d32');
+drawSparkline(tempCanvas, tempData, '#2f7d32');
+drawSparkline(humCanvas, humData, '#2f7d32');
 }
 
 window.addEventListener('load', ()=>{
-  // initial draw after small delay so layout ready
-  setTimeout(()=>{ tickSensors(); }, 200);
-  setInterval(tickSensors, 3000);
+// initial draw after small delay so layout ready
+setTimeout(()=>{ tickSensors(); }, 200);
+setInterval(tickSensors, 3000);
 });
 
-/* register service worker (relative path inside docs/) */
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').catch(err=>{
-    // non-blocking: we log but do nothing
-    console.warn('SW register failed', err);
-  });
+/* ---------- register service worker (docs/sw.js) ---------- */
+if ('serviceWorker' in navigator) {
+navigator.serviceWorker.register('./sw.js').then(reg=>{
+// optional: send message to sw to clear old caches if needed
+// if (reg.waiting) reg.waiting.postMessage({type:'SKIP_WAITING'});
+}).catch(err=>{
+console.warn('SW register failed:', err);
+});
 }
 </script>
 </body>
