@@ -152,21 +152,33 @@ canvas{width:100%;height:70px;display:block}
 <div class="footer">© 2025 Hana AgroTech Sdn. Bhd.</div>
 </div>
 
-<!-- PUMP -->
+<!-- PUMP (ganti bahagian lama) -->
 <div id="pump" class="screen" style="display:none">
 <div class="back-btn" onclick="show('main')">← Kembali</div>
 
 <div class="sensor-card">
+<div style="display:flex; justify-content:space-between; align-items:center">
+<div>
 <div class="title">Kawal Pam Air</div>
-<div style="margin-top:8px">
-<button class="btn" onclick="pump('ON')" style="background:#2f7d32;color:#fff;border:none">HIDUPKAN</button>
-<button class="btn" onclick="pump('OFF')" style="background:#fff;color:#2f7d32;border:3px solid #2f7d32">MATIKAN</button>
+<div class="subtitle">Kawalan manual pam</div>
+</div>
+<div id="pumpStatus" style="font-weight:800; color:#2f7d32; background:#e9f4ea; padding:8px 12px; border-radius:10px">
+OFF
+</div>
+</div>
+
+<div style="margin-top:12px; display:flex; gap:10px">
+<button id="btnPumpOn" class="btn" style="flex:1; background:#2f7d32;color:#fff;border:none;padding:12px" onclick="pump('ON')">
+Hidupkan
+</button>
+<button id="btnPumpOff" class="btn" style="flex:1; background:#fff;color:#2f7d32;border:3px solid #2f7d32;padding:12px" onclick="pump('OFF')">
+Matikan
+</button>
 </div>
 </div>
 
 <div class="footer">© 2025 Hana AgroTech Sdn. Bhd.</div>
 </div>
-
 <!-- SENSOR simple charts (alternate) -->
 <div id="sensor" class="screen" style="display:none">
 <div class="back-btn" onclick="show('main')">← Kembali</div>
