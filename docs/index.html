@@ -9,218 +9,346 @@
 
   <style>
     :root{
-      --accent:#2f7d32;
-      --card:#fff;
-      --bg:#f2f2f2;
-      --muted:#666;
-      --text:#0b2540;
-      --green-soft: #e8f5e1;
+      --accent:#2f7d32; --bg:#f2f2f2; --card:#fff; --muted:#666; --text:#0b2540;
     }
-    html,body{margin:0;padding:0;font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); color:var(--text);}
-    .header{background:var(--accent); color:#fff; padding:18px 16px; text-align:center}
-    .title{font-weight:800; font-size:28px; letter-spacing:1px}
-    .subtitle{font-size:13px; opacity:0.95}
-    .container{max-width:760px;margin:14px auto;padding:0 14px}
-    .back-btn{border:3px dashed #2f7d32;border-radius:12px;padding:16px; color:var(--accent); display:inline-block;margin-bottom:14px; cursor:pointer}
-    .card{background:var(--card); border-radius:12px;padding:14px;margin-bottom:14px; box-shadow:0 6px 18px rgba(0,0,0,0.06)}
-    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-    .big-btn{background: #cfecca; padding:18px;text-align:center;border-radius:6px;font-weight:700;color:var(--text);cursor:pointer}
-    .big-btn.small{padding:10px;font-size:13px}
-    .footer{padding:28px 0;text-align:center;color:var(--muted)}
-    /* listing buttons (home) */
-    .home-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:10px}
-    .home-btn{background: #dff2d9;border-radius:8px;padding:14px;text-align:center;font-weight:700;cursor:pointer}
-    .home-stats{background:#fff;border-radius:10px;padding:18px;font-weight:700; box-shadow:0 6px 18px rgba(0,0,0,0.05)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;background:var(--bg);color:var(--text)}
+    .header{background:var(--accent);color:#fff;padding:20px 14px;text-align:center}
+    .title{font-weight:900;font-size:28px}
+    .subtitle{font-size:13px;opacity:.95}
+    .wrap{max-width:820px;margin:12px auto;padding:0 14px}
+    .back-btn{display:inline-block;border:3px dashed var(--accent);border-radius:16px;padding:14px 18px;color:var(--accent);cursor:pointer;margin-bottom:14px}
+    .card{background:var(--card);border-radius:12px;padding:14px;margin-bottom:14px;box-shadow:0 8px 18px rgba(0,0,0,0.06)}
+    .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .home-btn{background:#eaf6ea;border-radius:10px;padding:16px;text-align:center;font-weight:800;cursor:pointer}
+    .badge{background:var(--accent);color:#fff;padding:6px 10px;border-radius:12px;float:right;font-weight:800}
     /* charts */
-    .chart{padding:8px 12px;}
-    canvas{width:100%; height:70px; display:block;}
-    .badge{background:var(--accent);color:#fff;padding:6px 10px;border-radius:12px;float:right;font-weight:700}
-    /* screens (show/hide) */
+    .chart{padding:10px}
+    canvas{width:100%;height:76px;display:block}
+    /* screens */
     .screen{display:none}
     .active{display:block}
-    /* back icon small */
-    .back-icon{font-size:20px;margin-right:6px;vertical-align:middle}
-    /* mobile adjustments */
-    @media(min-width:800px){
-      .container{padding:0 32px}
-      canvas{height:90px}
-    }
+    /* pump */
+    .pump-row{display:flex;gap:12px;align-items:center}
+    .btn{padding:12px 14px;border-radius:8px;border:0;cursor:pointer;background:var(--accent);color:#fff;font-weight:700}
+    .btn.ghost{background:#f2f2f2;color:var(--text);box-shadow:none}
+    /* table */
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;text-align:left;border-bottom:1px solid #eee}
+    .muted{color:var(--muted)}
+    .footer{padding:22px 0;text-align:center;color:var(--muted)}
+    @media(min-width:900px){canvas{height:100px}}
   </style>
 </head>
-<body data-theme="green">
+<body>
   <div class="header">
     <div class="title">MY TANI</div>
     <div class="subtitle">Ladang Pintar Di Hujung Jari Anda</div>
   </div>
 
-  <div class="container">
-    <!-- BACK (shared) -->
+  <div class="wrap">
+    <!-- shared back button -->
     <div id="backWrap" class="back-btn" onclick="show('home')">
-      <span class="back-icon">←</span> Kembali
+      <span style="font-size:18px;margin-right:8px">←</span> Kembali
     </div>
 
     <!-- HOME -->
     <div id="home" class="screen active">
-      <div class="card home-stats">
-        <div style="font-size:18px;font-weight:800">Dashboard Ringkas</div>
+      <div class="card" style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-weight:800;font-size:18px">Selamat Datang</div>
+          <div class="muted">Pilih modul di bawah</div>
+        </div>
+        <div style="text-align:center">
+          <div style="background:#fff;padding:8px;border-radius:8px;font-weight:800">Pengguna Apps</div>
+          <div style="margin-top:8px;font-size:20px;font-weight:900;color:var(--accent)">212,110</div>
+        </div>
       </div>
 
-      <div class="home-grid">
-        <div class="home-btn" onclick="show('monitor-tanaman')">Jenis Sayuran</div>
-        <div class="home-btn" onclick="show('monitor-drone')">Jenis Buah-buahan</div>
-        <div class="home-btn" onclick="show('sensor')">Kelembapan Tanah</div>
-        <div class="home-btn" onclick="show('pump')">PH Air</div>
-        <div class="home-btn" onclick="show('sales')">Siraman Baja</div>
-        <div class="home-btn" onclick="show('stock')">Stok Tanaman</div>
-        <div class="home-btn" onclick="show('health')">Kesihatan Tanaman</div>
-        <div class="home-btn" onclick="show('sales')">Rekod Belian & Jualan</div>
+      <div class="grid2" style="margin-top:8px">
+        <div class="home-btn" onclick="show('monitor-tanaman')">🌿 Monitor Tanaman</div>
+        <div class="home-btn" onclick="show('monitor-drone')">🚁 Monitor Drone</div>
+        <div class="home-btn" onclick="show('sensor')">💧 Suhu & Kelembapan</div>
+        <div class="home-btn" onclick="show('pump')">💦 Kawal Pam Air</div>
+        <div class="home-btn" onclick="show('stock')">📦 Stok Tanaman</div>
+        <div class="home-btn" onclick="show('sales')">🧾 Jualan & Invoice</div>
       </div>
     </div>
 
-    <!-- MONITOR TANAMAN -->
-    <div id="monitor-tanaman" class="screen card">
-      <div style="margin-bottom:10px;font-weight:800;font-size:20px">Dashboard Ringkas</div>
+    <!-- MONITOR TANAMAN (list + ringkasan) -->
+    <div id="monitor-tanaman" class="screen">
+      <div class="card">
+        <div style="font-weight:800;font-size:18px">Monitor Tanaman — Laman Utama</div>
+        <div class="muted">Senarai tanaman & ringkasan</div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <!-- contoh tanaman -->
+          <div style="flex:1;min-width:160px">
+            <div style="font-weight:800">Bayam</div>
+            <div class="muted">Stok: 120 — Status: OK</div>
+          </div>
+          <div style="flex:1;min-width:160px">
+            <div style="font-weight:800">Sawi</div>
+            <div class="muted">Stok: 80 — Status: OK</div>
+          </div>
+          <div style="flex:1;min-width:160px">
+            <div style="font-weight:800">Kangkung</div>
+            <div class="muted">Stok: 50 — Status: OK</div>
+          </div>
+        </div>
+      </div>
 
       <div class="card chart">
-        <div style="font-weight:800">Suhu (°C) <span class="badge" id="tempBadge">28.4°C</span></div>
+        <div style="font-weight:800">Suhu (°C) <span id="tempBadge" class="badge">28.0°C</span></div>
         <canvas id="tempChart"></canvas>
       </div>
 
       <div class="card chart">
-        <div style="font-weight:800">Kelembapan (%) <span class="badge" id="humBadge">63.2%</span></div>
+        <div style="font-weight:800">Kelembapan (%) <span id="humBadge" class="badge">61.5%</span></div>
         <canvas id="humChart"></canvas>
       </div>
     </div>
 
     <!-- MONITOR DRONE -->
-    <div id="monitor-drone" class="screen card">
-      <div style="font-weight:800;font-size:20px;margin-bottom:10px">Drone</div>
-      <div class="card">Animasi drone & telemetry (contoh)</div>
-    </div>
+    <div id="monitor-drone" class="screen">
+      <div class="card">
+        <div style="font-weight:800;font-size:18px">Monitor Drone</div>
+        <div class="muted">Animasi drone & telemetry (simulated)</div>
+      </div>
 
-    <!-- PUMP CONTROL -->
-    <div id="pump" class="screen card">
-      <div style="font-weight:800;font-size:20px;margin-bottom:10px">Kawal Pam Air</div>
-      <div style="display:flex;gap:12px">
-        <button id="pumpBtn" class="big-btn" onclick="togglePump()">ON</button>
-        <div style="flex:1" class="card">
-          Status Pam: <span id="pumpStatus">ON</span><br/><small class="muted">Tekan untuk togol</small>
+      <div class="card">
+        <div id="telemetry">Altitude: <strong id="altVal">120</strong> m — Speed: <strong id="spdVal">12</strong> km/h — Battery: <strong id="batVal">89</strong>%</div>
+        <div style="margin-top:10px">
+          <button class="btn" onclick="simulateDrone()">Simulasi Drone</button>
         </div>
       </div>
     </div>
 
-    <!-- SENSOR (suhu/kelembapan page simplified) -->
-    <div id="sensor" class="screen card">
-      <div style="font-weight:800;font-size:20px;margin-bottom:10px">Sensor</div>
-      <div class="card">Data sensor ringkas (contoh) — suhu & kelembapan dipaparkan di halaman lain juga.</div>
+    <!-- SENSOR (suh u/ kelembapan) -->
+    <div id="sensor" class="screen">
+      <div class="card">
+        <div style="font-weight:800;font-size:18px">Suhu & Kelembapan</div>
+        <div class="muted">Graf ringkas</div>
+      </div>
+
+      <div class="card chart">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:800">Suhu (°C)</div>
+          <div id="tempBadge2" class="badge">28.0°C</div>
+        </div>
+        <canvas id="tempChart2"></canvas>
+      </div>
+
+      <div class="card chart">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:800">Kelembapan (%)</div>
+          <div id="humBadge2" class="badge">61.5%</div>
+        </div>
+        <canvas id="humChart2"></canvas>
+      </div>
     </div>
 
-    <!-- STOCK -->
-    <div id="stock" class="screen card">
-      <div style="font-weight:800;font-size:20px;margin-bottom:10px">Stok Tanaman</div>
-      <div id="stockTable" class="card">Tiada data (contoh).</div>
+    <!-- PUMP CONTROL -->
+    <div id="pump" class="screen">
+      <div class="card">
+        <div style="font-weight:800;font-size:18px">Kawal Pam Air</div>
+      </div>
+
+      <div class="card">
+        <div class="pump-row">
+          <button id="pumpBtn" class="btn" onclick="togglePump()">OFF</button>
+          <div style="flex:1">
+            <div>Status Pam: <strong id="pumpStatus">OFF</strong></div>
+            <div class="muted">Tekan butang untuk hidup / matikan pam (simulated)</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- SALES -->
-    <div id="sales" class="screen card">
-      <div style="font-weight:800;font-size:20px;margin-bottom:10px">Jualan</div>
-      <div class="card">Rekod belian & jualan — contoh ringkas.</div>
+    <!-- STOCK PAGE -->
+    <div id="stock" class="screen">
+      <div class="card">
+        <div style="font-weight:800;font-size:18px">Stok Tanaman</div>
+      </div>
+
+      <div class="card">
+        <table>
+          <thead><tr><th>Produk</th><th>Stok</th><th>Harga (RM)</th></tr></thead>
+          <tbody id="stockTable">
+            <!-- will be filled -->
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- HEALTH -->
-    <div id="health" class="screen card">
-      <div style="font-weight:800;font-size:20px;margin-bottom:10px">Kesihatan Tanaman</div>
-      <div class="card">Panduan ringkas — contoh.</div>
+    <!-- SALES / INVOICE -->
+    <div id="sales" class="screen">
+      <div class="card">
+        <div style="font-weight:800;font-size:18px">Jualan & Invoice</div>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:800">Invoice Ringkas</div>
+        <div class="muted" style="margin-bottom:8px">Tarikh: <span id="invDate"></span></div>
+        <div style="background:#fff;padding:12px;border-radius:8px">
+          <div id="invoiceList"></div>
+          <div style="text-align:right;margin-top:8px;font-weight:800">Jumlah: RM <span id="invTotal">0.00</span></div>
+        </div>
+      </div>
     </div>
 
     <div class="footer">© 2025 Hana AgroTech Sdn. Bhd.</div>
   </div>
 
   <script>
-    // Navigation: show screen by id
+    /* ---------- navigation ---------- */
     function show(id){
       document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
       const el = document.getElementById(id);
       if(el) el.classList.add('active');
       // hide back button on home
-      document.getElementById('backWrap').style.display = (id === 'home') ? 'none' : 'inline-block';
-      // if showing monitor-tanaman, (re)draw charts
-      if(id==='monitor-tanaman'){ drawCharts(); }
+      document.getElementById('backWrap').style.display = (id==='home') ? 'none' : 'inline-block';
+      // draw charts when needed
+      if(id==='monitor-tanaman' || id==='sensor') drawAllCharts();
+      if(id==='stock') renderStock();
+      if(id==='sales') renderInvoice();
     }
 
-    // pump toggle
-    let pumpOn = true;
+    // initial: hide back when on home
+    document.addEventListener('DOMContentLoaded', ()=>{ show('home'); });
+
+    /* ---------- pump logic (works) ---------- */
+    let pumpOn = false;
     function togglePump(){
       pumpOn = !pumpOn;
       document.getElementById('pumpBtn').textContent = pumpOn ? 'ON' : 'OFF';
       document.getElementById('pumpStatus').textContent = pumpOn ? 'ON' : 'OFF';
-      // simulate action (alert optional)
-      // alert('Pam ' + (pumpOn ? 'HIDUP' : 'MATI'));
+      // simulate server call if needed (fetch('/api/pump?action=on')...)
     }
 
-    // small chart draw helper (vanilla canvas)
+    /* ---------- sample stock & invoice ---------- */
+    const stockItems = [
+      {name:'Bayam', qty:120, price:2},
+      {name:'Sawi', qty:80, price:3},
+      {name:'Kangkung', qty:50, price:1.5},
+      {name:'Tomato', qty:40, price:4}
+    ];
+
+    function renderStock(){
+      const tbody = document.getElementById('stockTable');
+      tbody.innerHTML = '';
+      stockItems.forEach(i=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${i.name}</td><td>${i.qty}</td><td>RM ${i.price.toFixed(2)}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderInvoice(){
+      document.getElementById('invDate').textContent = new Date().toLocaleString();
+      const list = document.getElementById('invoiceList');
+      list.innerHTML = '';
+      // sample items
+      const items = [
+        {name:'Bayam', qty:10, price:2},
+        {name:'Tomato', qty:5, price:4}
+      ];
+      let total = 0;
+      items.forEach(it=>{
+        const row = document.createElement('div');
+        row.style.display='flex'; row.style.justifyContent='space-between';
+        row.style.padding='6px 0';
+        row.innerHTML = `<div>${it.name} x${it.qty}</div><div>RM ${(it.qty*it.price).toFixed(2)}</div>`;
+        list.appendChild(row);
+        total += it.qty*it.price;
+      });
+      document.getElementById('invTotal').textContent = total.toFixed(2);
+    }
+
+    /* ---------- drone simulate ---------- */
+    function simulateDrone(){
+      let alt = 120, sp = 12, bat = 89;
+      const id = setInterval(()=>{
+        alt = Math.max(5, Math.round((alt + (Math.random()-0.5)*12)*10)/10);
+        sp = Math.max(0.5, Math.round((sp + (Math.random()-0.5)*6)*10)/10);
+        bat = Math.max(2, Math.round((bat - Math.random()*1.2)*10)/10);
+        document.getElementById('altVal').textContent = alt;
+        document.getElementById('spdVal').textContent = sp;
+        document.getElementById('batVal').textContent = bat;
+        if(bat < 10) { clearInterval(id); }
+      }, 900);
+      setTimeout(()=>clearInterval(id), 9000);
+    }
+
+    /* ---------- small charts (vanilla canvas) ---------- */
     function drawLine(canvas, data, color){
       if(!canvas) return;
       const ctx = canvas.getContext('2d');
-      const w = canvas.offsetWidth;
-      const h = canvas.offsetHeight;
-      canvas.width = w*devicePixelRatio;
-      canvas.height = h*devicePixelRatio;
-      ctx.scale(devicePixelRatio, devicePixelRatio);
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      // HiDPI
+      const DPR = window.devicePixelRatio || 1;
+      canvas.width = Math.round(w*DPR);
+      canvas.height = Math.round(h*DPR);
+      ctx.scale(DPR, DPR);
       ctx.clearRect(0,0,w,h);
-      // fill area
+
       const max = Math.max(...data);
       const min = Math.min(...data);
       ctx.beginPath();
       data.forEach((v,i)=>{
-        const x = i/(data.length-1)*(w-8) + 4;
-        const y = h - ((v - min) / (max - min || 1))*(h-12) - 6;
+        const x = i/(data.length-1)*(w-8)+4;
+        const y = h - ((v-min)/(max-min||1))*(h-18) - 8;
         if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
       });
-      ctx.lineWidth = 2;
+      ctx.lineWidth=2;
       ctx.strokeStyle = color;
       ctx.stroke();
-      // fill under curve
+      // fill
       ctx.lineTo(w-4,h-6);
       ctx.lineTo(4,h-6);
       ctx.closePath();
-      ctx.fillStyle = 'rgba(47,125,50,0.09)';
+      ctx.fillStyle = 'rgba(47,125,50,0.08)';
       ctx.fill();
     }
 
-    // sample data & periodic update
-    let tempData = [25,26,27,27,28,28,29];
-    let humData = [55,58,60,62,63,61,60];
+    // sample rolling data
+    let tempData = [25,26,27,27.5,28,28.3,28.8];
+    let humData = [50,55,58,62,63.2,62,61];
 
     function tickSensors(){
-      // random walk
-      tempData.push(Math.max(18, Math.min(40, Math.round((tempData[tempData.length-1] + (Math.random()-0.5)*1.8)*10)/10 )));
-      humData.push(Math.max(20, Math.min(100, Math.round((humData[humData.length-1] + (Math.random()-0.5)*2.5)*10)/10 )));
+      // produce gentle random changes
+      tempData.push(Math.round((tempData[tempData.length-1] + (Math.random()-0.5)*1.2)*10)/10);
+      humData.push(Math.round((humData[humData.length-1] + (Math.random()-0.5)*2.4)*10)/10);
       if(tempData.length>12) tempData.shift();
       if(humData.length>12) humData.shift();
       // update badges
-      document.getElementById('tempBadge').textContent = tempData[tempData.length-1] + '°C';
-      document.getElementById('humBadge').textContent = humData[humData.length-1] + '%';
-      drawCharts();
+      const t = tempData[tempData.length-1];
+      const h = humData[humData.length-1];
+      document.getElementById('tempBadge').textContent = t + '°C';
+      document.getElementById('humBadge').textContent = h + '%';
+      document.getElementById('tempBadge2').textContent = t + '°C';
+      document.getElementById('humBadge2').textContent = h + '%';
+      // draw where visible
+      drawAllCharts();
     }
 
-    function drawCharts(){
+    function drawAllCharts(){
       drawLine(document.getElementById('tempChart'), tempData, '#2f7d32');
       drawLine(document.getElementById('humChart'), humData, '#2f7d32');
+      drawLine(document.getElementById('tempChart2'), tempData, '#2f7d32');
+      drawLine(document.getElementById('humChart2'), humData, '#2f7d32');
     }
 
-    // init
-    window.addEventListener('load', ()=>{
-      // initial state: hide back on home
-      show('home');
-      // start ticking
-      setInterval(tickSensors, 3000);
-      tickSensors();
-    });
+    // init ticking
+    setInterval(tickSensors, 3000);
+    tickSensors();
 
-    // register service worker
+    /* ---------- service worker register ---------- */
     if('serviceWorker' in navigator){
-      navigator.serviceWorker.register('sw.js').catch(e=>console.log('sw fail',e));
+      navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW register failed',e));
     }
   </script>
 </body>
