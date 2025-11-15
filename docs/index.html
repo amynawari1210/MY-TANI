@@ -4,205 +4,259 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="theme-color" content="#2f7d32" />
-<link rel="manifest" href="./manifest.json">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="MY TANI">
+<link rel="manifest" href="manifest.json">
 <title>MY TANI</title>
-
 <style>
 :root{
---bg:#f2f6f2;
+--bg:#f2f2f2;
 --accent:#2f7d32;
---card:#ffffff;
---text:#0b2f1a;
---muted:#6b6b6b;
---radius:12px;
---gap:14px;
+--card:#fff;
+--text:#0b2540;
+--muted:#666;
+--green-graph:#2f7d32;
 }
-*{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
-.header{background:linear-gradient(180deg,var(--accent),#1f6a2a);color:#fff;padding:20px 16px;text-align:center}
-.title{font-size:26px;font-weight:800;letter-spacing:0.6px}
-.subtitle{font-size:13px;opacity:0.95;margin-top:6px}
-
-.container{padding:16px;max-width:880px;margin:0 auto}
-.back-btn{
-display:inline-block;padding:12px 14px;border-radius:12px;border:2px dashed rgba(47,125,50,0.28);color:var(--accent);font-weight:700;margin-bottom:12px;cursor:pointer;background:#fff;
--webkit-appearance:none; appearance:none;
-}
-
-.card{background:var(--card);border-radius:12px;padding:12px;margin-bottom:14px;box-shadow:0 8px 20px rgba(0,0,0,0.06);position:relative}
-.card h3{margin:0;font-size:18px;font-weight:800}
-.muted{color:var(--muted);font-size:13px}
-.badge{position:absolute;right:14px;top:16px;background:var(--accent);color:#fff;padding:8px 12px;border-radius:10px;font-weight:700}
-
-.chart{padding:12px 0 4px 0}
-canvas{width:100%;height:70px;display:block}
-
-.footer{padding:16px 8px;text-align:center;color:var(--muted);font-size:14px}
-
-.btn{display:block;width:100%;text-align:left;background:transparent;border:2px solid var(--accent);border-radius:12px;padding:14px;font-size:18px;color:var(--accent);font-weight:700;margin-bottom:12px;cursor:pointer}
-.btn small{display:block;font-weight:400;color:var(--muted);font-size:13px}
-
-@media (max-width:480px){
-.title{font-size:22px}
-}
+body{margin:0;font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); color:var(--text)}
+.header{ background:var(--accent); color:#fff; padding:18px 12px; text-align:center}
+.title{ font-size:28px; font-weight:800; letter-spacing:1px}
+.subtitle{ font-size:13px; opacity:0.9 }
+.container{ padding:14px; max-width:760px; margin:0 auto}
+.back-btn{ display:inline-block; width:100%; border:3px dashed var(--accent); padding:18px; border-radius:12px; color:var(--accent); background:#fff; text-align:left; font-weight:600; box-sizing:border-box; margin-bottom:14px; cursor:pointer }
+.card{ background:var(--card); padding:12px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.05); margin-bottom:14px; position:relative; overflow:hidden }
+.card h3{ margin:0;font-size:20px; color:var(--text)}
+.muted{ color:var(--muted); font-size:13px}
+.badge{ position:absolute; right:12px; top:12px; background:var(--accent); color:#fff; padding:6px 12px; border-radius:12px; font-weight:700 }
+.chart{ padding:12px 6px 6px 6px }
+canvas{ width:100%; height:70px; display:block }
+.footer{ text-align:center; color:var(--muted); padding:18px 0 60px }
+/* small tweaks for the number on right */
+.value-bubble{ position:absolute; right:12px; top:12px; background:var(--accent); color:#fff; padding:8px 12px; border-radius:10px; font-weight:700 }
+/* screens (SPA) */
+.screen{ display:none }
+.screen.active{ display:block }
+/* small back icon spacing */
+.back-ico{ margin-right:8px }
+/* responsive */
+@media(min-width:700px){ .container{ padding:24px } }
 </style>
 </head>
+<body data-theme="green">
 
-<body>
 <div class="header">
 <div class="title">MY TANI</div>
 <div class="subtitle">Ladang Pintar Di Hujung Jari Anda</div>
 </div>
 
 <div class="container">
-<!-- Robust back button -->
-<button class="back-btn" id="backBtn" aria-label="Kembali" onclick="goBack()">← Kembali</button>
 
-<!-- Suhu Card -->
-<div class="card" id="tempCard">
-<h3>Suhu (°C)</h3>
-<div class="muted">Updated setiap 3 saat</div>
-<div class="badge" id="tempNow">--°C</div>
-<div class="chart"><canvas id="tempCanvas" aria-label="Graf suhu"></canvas></div>
+<!-- Back button -->
+<button id="backBtn" class="back-btn" type="button" onclick="goBack()">
+<span class="back-ico">←</span> Kembali
+</button>
+
+<!-- HOME (menu) -->
+<div id="home" class="screen active">
+<div class="card"><button class="btn" onclick="show('monitor')">📡 Monitor Tanaman</button></div>
+<div class="card"><button class="btn" onclick="show('drone')">🚁 Monitor Drone</button></div>
+<div class="card"><button class="btn" onclick="show('pump')">💧 Kawal Pam Air <small>Tekan ON/OFF</small></button></div>
+<div class="card"><button class="btn" onclick="show('sensor')">🌡️ Suhu & Kelembapan</button></div>
+<div class="card"><button class="btn" onclick="show('stock')">📦 Stok Tanaman</button></div>
+<div class="card"><button class="btn" onclick="show('sales')">🛒 Jualan</button></div>
 </div>
 
-<!-- Kelembapan Card -->
-<div class="card" id="humCard">
+<!-- MONITOR -->
+<div id="monitor" class="screen">
+<div class="card"><h3>Dashboard Ringkas</h3></div>
+</div>
+
+<!-- DRONE -->
+<div id="drone" class="screen">
+<div class="card"><h3>Drone</h3></div>
+</div>
+
+<!-- PUMP -->
+<div id="pump" class="screen">
+<div class="card"><h3>Status Pam</h3>
+<div style="margin-top:10px; display:flex; gap:8px">
+<button class="btn" onclick="pump('ON')" style="flex:1;padding:10px">HIDUP</button>
+<button class="btn" onclick="pump('OFF')" style="flex:1;padding:10px">MATI</button>
+</div>
+</div>
+</div>
+
+<!-- SENSOR (Suhu & Kelembapan) -->
+<div id="sensor" class="screen">
+<div class="card">
+<h3>Suhu (°C)</h3>
+<div class="muted">Updated setiap 3s</div>
+<div class="value-bubble" id="tempNow">--°C</div>
+<div class="chart">
+<canvas id="tempChart"></canvas>
+</div>
+</div>
+
+<div class="card">
 <h3>Kelembapan (%)</h3>
-<div class="muted">Updated setiap 3 saat</div>
-<div class="badge" id="humNow">--%</div>
-<div class="chart"><canvas id="humCanvas" aria-label="Graf kelembapan"></canvas></div>
+<div class="muted">Updated setiap 3s</div>
+<div class="value-bubble" id="humNow">--%</div>
+<div class="chart">
+<canvas id="humChart"></canvas>
+</div>
+</div>
+</div>
+
+<!-- STOCK -->
+<div id="stock" class="screen">
+<div class="card"><h3>Stok Tanaman</h3></div>
+</div>
+
+<!-- SALES -->
+<div id="sales" class="screen">
+<div class="card"><h3>Jualan</h3></div>
 </div>
 
 <div class="footer">© 2025 Hana AgroTech Sdn. Bhd.</div>
 </div>
 
 <script>
-/* ---------- goBack() robust function ---------- */
+/* ---------- Navigation & goBack ---------- */
+
+function show(id){
+document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+const el = document.getElementById(id);
+if(el) el.classList.add('active');
+// push history state so back works on normal browser
+try {
+if(history && history.pushState) history.pushState({page:id}, '', '#' + id);
+} catch(e){}
+}
+
+// robust goBack()
 function goBack(){
 try{
-// If browser history exists, go back
-if (history.length > 1) {
+// if there is a real history, go back
+if (window.history && history.length > 1) {
 history.back();
 return;
 }
-// If referrer is same site, try back
-if (document.referrer && document.referrer.indexOf(location.hostname) !== -1) {
-history.back();
+// if SPA show exists, go to home
+if (typeof window.show === 'function') {
+window.show('home');
 return;
 }
-// fallback to root index
+// fallback to index
 location.href = './index.html';
-} catch(e){
+} catch(err){
 location.href = './index.html';
 }
 }
 
-/* ---------- helper: hex to rgba ---------- */
-function hexToRGBA(hex, a){
-hex = hex.replace('#','');
-if(hex.length===3) hex = hex.split('').map(c=>c+c).join('');
-const r = parseInt(hex.substr(0,2),16);
-const g = parseInt(hex.substr(2,2),16);
-const b = parseInt(hex.substr(4,2),16);
-return `rgba(${r},${g},${b},${a})`;
-}
-
-/* ---------- drawSparkline (retina-ready) ---------- */
-function drawSparkline(canvas, data, color){
-if(!canvas) return;
-const W = Math.max(120, canvas.clientWidth);
-const H = 70;
-const DPR = window.devicePixelRatio || 1;
-canvas.width = Math.round(W * DPR);
-canvas.height = Math.round(H * DPR);
-canvas.style.height = H + 'px';
-const ctx = canvas.getContext('2d');
-ctx.setTransform(DPR,0,0,DPR,0,0);
-ctx.clearRect(0,0,W,H);
-if(!data || data.length===0) return;
-
-const pad = 8;
-const w = W - pad*2;
-const h = H - pad*2;
-const min = Math.min(...data);
-const max = Math.max(...data);
-const range = (max - min) || 1;
-
-// build points
-const pts = data.map((v,i)=>{
-const x = pad + (i/(data.length-1||1))*w;
-const y = pad + (1 - (v - min)/range)*h;
-return {x,y};
+// handle browser back button to update SPA screens
+window.addEventListener('popstate', (e)=>{
+if(e.state && e.state.page) show(e.state.page);
+else show('home');
 });
 
-// fill area
+/* ---------- pump control ---------- */
+function pump(state){
+const el = document.getElementById('pump');
+alert('Pam ' + state); // placeholder action
+// (here you could also call backend API)
+}
+
+/* ---------- small chart helpers (vanilla canvas) ---------- */
+function drawLine(canvas, data, color){
+if(!canvas) return;
+const ctx = canvas.getContext('2d');
+// set pixel size
+canvas.width = canvas.offsetWidth * devicePixelRatio;
+canvas.height = 80 * devicePixelRatio;
+ctx.scale(devicePixelRatio, devicePixelRatio);
+const w = canvas.offsetWidth;
+const h = 70;
+ctx.clearRect(0,0,w,h);
+// area
+ctx.fillStyle = 'rgba(47,125,50,0.08)';
 ctx.beginPath();
-ctx.moveTo(pts[0].x, pts[0].y);
-for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x, pts[i].y);
-ctx.lineTo(pad + w, pad + h);
-ctx.lineTo(pad, pad + h);
+ctx.moveTo(0,h);
+const max = Math.max(...data);
+const min = Math.min(...data);
+data.forEach((v,i)=>{
+const x = i/(data.length-1) * (w-12) + 6;
+const y = h - ((v-min)/(max-min || 1))*(h-20) - 6;
+ctx.lineTo(x,y);
+if(i===0) ctx.moveTo(x,y);
+});
+ctx.lineTo(w, h);
 ctx.closePath();
-ctx.fillStyle = hexToRGBA(color, 0.12);
 ctx.fill();
 
 // stroke
 ctx.beginPath();
-ctx.moveTo(pts[0].x, pts[0].y);
-for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x, pts[i].y);
-ctx.strokeStyle = color;
+ctx.strokeStyle = color || getComputedStyle(document.documentElement).getPropertyValue('--green-graph') || '#2f7d32';
 ctx.lineWidth = 2;
+data.forEach((v,i)=>{
+const x = i/(data.length-1) * (w-12) + 6;
+const y = h - ((v-min)/(max-min || 1))*(h-20) - 6;
+if(i===0) ctx.moveTo(x,y);
+else ctx.lineTo(x,y);
+});
 ctx.stroke();
-
-// end dot
-const last = pts[pts.length-1];
-ctx.beginPath();
-ctx.fillStyle = color;
-ctx.arc(last.x, last.y, 3, 0, Math.PI*2);
-ctx.fill();
 }
 
 /* ---------- sensor simulation ---------- */
-let tempData = [25.0,25.6,26.1,26.5,26.2];
-let humData = [60,60.5,61,61.2,61];
-
-const tempCanvas = document.getElementById('tempCanvas');
-const humCanvas = document.getElementById('humCanvas');
-const tempNowEl = document.getElementById('tempNow');
-const humNowEl = document.getElementById('humNow');
+let tempData = [25,26,27,27,28,28];
+let humData = [60,61,62,63,62,62];
 
 function tickSensors(){
-const lastT = tempData[tempData.length-1] || 26;
-const lastH = humData[humData.length-1] || 61;
-const nextT = +(lastT + (Math.random()-0.5)*0.7).toFixed(1);
-const nextH = Math.max(20, Math.min(100, Math.round(lastH + (Math.random()-0.5)*2)));
+// push new simulated values
+const lastT = tempData[tempData.length-1] || 27;
+const lastH = humData[humData.length-1] || 62;
+const nextT = Math.round((lastT + (Math.random()-0.5)*1.6)*10)/10;
+const nextH = Math.round((lastH + (Math.random()-0.5)*2.0)*10)/10;
 tempData.push(nextT);
 humData.push(nextH);
-if(tempData.length>20) tempData.shift();
-if(humData.length>20) humData.shift();
+if(tempData.length>12) tempData.shift();
+if(humData.length>12) humData.shift();
 
-tempNowEl.textContent = nextT.toFixed(1) + '°C';
-humNowEl.textContent = nextH + '%';
+// update DOM
+document.getElementById('tempNow').textContent = nextT + '°C';
+document.getElementById('humNow').textContent = nextH + '%';
 
-drawSparkline(tempCanvas, tempData, '#2f7d32');
-drawSparkline(humCanvas, humData, '#2f7d32');
+// draw charts
+drawLine(document.getElementById('tempChart'), tempData, 'rgb(47,125,50)');
+drawLine(document.getElementById('humChart'), humData, 'rgb(47,125,50)');
 }
 
+/* ---------- stock rendering (example) ---------- */
+const stockItems = [
+{name:'Bayam', qty:120, price:2},
+{name:'Sawi', qty:80, price:3},
+{name:'Kangkung', qty:50, price:1.5},
+{name:'Tomato', qty:40, price:4},
+];
+function renderStock(){
+// placeholder in case needed later
+}
+
+/* ---------- loading & init ---------- */
 window.addEventListener('load', ()=>{
-// initial draw after small delay so layout ready
-setTimeout(()=>{ tickSensors(); }, 200);
+// initialize charts once
+tickSensors();
 setInterval(tickSensors, 3000);
+
+// try to restore hash state
+if(location.hash){
+const id = location.hash.replace('#','');
+if(document.getElementById(id)) show(id);
+}
 });
 
-/* ---------- register service worker (docs/sw.js) ---------- */
-if ('serviceWorker' in navigator) {
-navigator.serviceWorker.register('./sw.js').then(reg=>{
-// optional: send message to sw to clear old caches if needed
-// if (reg.waiting) reg.waiting.postMessage({type:'SKIP_WAITING'});
+/* ---------- register service worker ---------- */
+if('serviceWorker' in navigator){
+navigator.serviceWorker.register('sw.js').then(reg=>{
+console.log('sw registered', reg);
 }).catch(err=>{
-console.warn('SW register failed:', err);
+console.warn('sw failed', err);
 });
 }
 </script>
