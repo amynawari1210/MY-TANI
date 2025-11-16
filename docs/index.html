@@ -4,276 +4,297 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#2f7d32" />
+  <link rel="manifest" href="./manifest.json">
   <title>MY TANI</title>
 
-  <!-- PWA manifest -->
-  <link rel="manifest" href="manifest.json">
-
   <style>
-/* FULLSCREEN BACKGROUND */
-.bg-hero {
-    background: url('./bg.jpg') center center / cover no-repeat fixed;
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    filter: brightness(0.55) blur(1.5px);
-}
+  :root{
+    --accent:#2f7d32;
+    --accent-dark:#23561a;
+    --muted:#6b6f6b;
+    --card:#ffffff;
+    --radius:12px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%; margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial; -webkit-font-smoothing:antialiased;}
+  body{background:transparent; color:#0b2540;}
 
-/* Pastikan content boleh scroll */
-body {
-    background: transparent !important;
-}
-</style>
-    html,body{height:100%; margin:0; font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
-    body{
-  <body data-theme="green">
-    <div class="bg-hero"></div>
-      background: #f2f2f2;
-      color:var(--text);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-    }
+  /* Fullscreen blurred background (fixed). Uses bg.jpg.JPG in /docs */
+  .bg-hero {
+    position:fixed; inset:0; z-index:-2;
+    background-image: url('./bg.jpg.JPG'); /* <-- change filename if needed */
+    background-position:center center;
+    background-size:cover;
+    background-repeat:no-repeat;
+    filter: brightness(0.55) blur(1.2px);
+    transform: translateZ(0);
+  }
+  .bg-overlay {
+    position:fixed; inset:0; z-index:-1;
+    background: linear-gradient(rgba(0,0,0,0.02), rgba(0,0,0,0.04));
+  }
 
-    /* Background fullscreen (image + blur + dark overlay) */
-    .bg-wrap{
-      position:fixed; inset:0; z-index:0; overflow:hidden;
-      pointer-events:none; /* content above should be clickable */
-    }
-    .bg-img{
-      position:absolute; inset:-10%; background-image:var(--bg-img); background-size:cover; background-position:center;
-      width:120%; height:120%; filter:blur(8px) saturate(1.05) brightness(0.6);
-      transform:scale(1.02);
-    }
+  /* Layout */
+  .app { min-height:100vh; display:flex; flex-direction:column; }
+  header.site-header { background:var(--accent); color:#fff; padding:20px 14px; text-align:center; }
+  header .brand { font-weight:800; font-size:28px; }
+  header .tag { font-size:13px; opacity:0.95; margin-top:6px; }
 
-    /* page layout */
-    .app{
-      position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column;
-    }
-    .header{
-      background:var(--accent); color:white; padding:18px 16px 22px; text-align:center;
-    }
-    .title{ font-size:28px; font-weight:800; letter-spacing:1px; margin:0}
-    .subtitle{ font-size:13px; opacity:0.95; margin-top:6px }
+  main.container { flex:1; width:100%; max-width:920px; margin:0 auto; padding:14px; box-sizing:border-box; }
 
-    .container{ padding:14px; max-width:720px; margin:0 auto; width:100%; flex:1; }
+  .back-wrap { display:none; margin-bottom:12px; }
+  .back-btn {
+    display:flex; align-items:center; gap:8px; padding:12px 14px; border-radius:14px;
+    border:3px dashed rgba(47,125,50,0.9); background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.9));
+    color:var(--accent); font-weight:700; cursor:pointer;
+  }
 
-    /* Kembali button (dotted) */
-    .back-btn{
-      border:3px dashed rgba(47,125,50,0.9);
-      border-radius:14px;
-      padding:18px;
-      display:block;
-      color:var(--accent);
-      text-decoration:none;
-      font-weight:600;
-      margin-bottom:14px;
-    }
-    .back-btn span{ font-size:18px; margin-left:8px }
+  .card { background:var(--card); border-radius:var(--radius); padding:14px; box-shadow:0 10px 26px rgba(3,10,10,0.06); margin-bottom:14px; }
 
-    /* Cards */
-    .card{
-      background:var(--card);
-      border-radius:12px;
-      padding:12px;
-      box-shadow: 0 6px 18px rgba(3,10,10,0.06);
-      margin-bottom:14px;
-    }
-    .card h3{ margin:0; font-size:20px; color:var(--text); font-weight:800 }
-    .muted{ color:var(--muted); font-size:13px; margin-top:6px }
+  .btn { display:block; width:100%; text-align:left; padding:14px; border-radius:12px; border:3px solid var(--accent); background:transparent; color:var(--accent); font-weight:800; font-size:18px; margin-bottom:12px; cursor:pointer; }
+  .btn small { display:block; color:var(--muted); font-weight:500; margin-top:6px; font-size:13px; }
 
-    /* top-right pill */
-    .pill{
-      float:right;
-      background:var(--accent);
-      color:white;padding:6px 12px;border-radius:12px;font-weight:700;
-      box-shadow:0 2px 6px rgba(0,0,0,0.12)
-    }
+  .chart { padding:10px 6px; }
+  canvas { width:100%; height:80px; display:block; border-radius:8px; }
 
-    /* Chart visual style */
-    .chart { padding:12px 6px; }
-    canvas { width:100%; height:70px; display:block; border-radius:8px; }
+  .pill { float:right; background:var(--accent); color:#fff; padding:8px 12px; border-radius:12px; font-weight:800; box-shadow:0 2px 6px rgba(0,0,0,0.12); }
+  .muted { color:var(--muted); font-size:13px; }
 
-    /* Buttons list (home page menu) */
-    .btn{ display:block; background:transparent; border:2px solid var(--accent); color:var(--accent); padding:16px; border-radius:12px; font-size:18px; text-align:left; margin-bottom:12px; cursor:pointer;}
-    .btn .small{ display:block; color:var(--muted); font-size:13px; margin-top:6px }
+  footer.site-foot { text-align:center; color:var(--muted); padding:22px 0; font-size:13px; }
 
-    footer{ text-align:center; color:var(--muted); padding:18px 0; margin-top:10px }
-
-    /* small screens tweaks */
-    @media(min-width:800px){
-      .container{ padding:20px; }
-      canvas{ height:90px }
-    }
+  /* responsive tweaks */
+  @media(min-width:800px){
+    main.container { padding:24px; }
+    canvas { height:100px; }
+  }
   </style>
 </head>
-<body data-theme="green">
-  <!-- background layer -->
-  <div class="bg-wrap" aria-hidden="true">
-    <div class="bg-img"></div>
-  </div>
+<body>
+  <!-- Background -->
+  <div class="bg-hero" aria-hidden="true"></div>
+  <div class="bg-overlay" aria-hidden="true"></div>
 
   <div class="app">
-    <header class="header">
-      <div class="title">MY TANI</div>
-      <div class="subtitle">Ladang Pintar Di Hujung Jari Anda</div>
+    <header class="site-header">
+      <div class="brand">MY TANI</div>
+      <div class="tag">Ladang Pintar Di Hujung Jari Anda</div>
     </header>
 
     <main class="container">
-      <!-- Kembali (shared) -->
-      <a id="backBtn" class="back-btn" href="#" onclick="show('home'); return false;">
-        ← <span>Kembali</span>
-      </a>
-
-      <!-- HOME -->
-      <div id="home" class="screen active card">
-        <h3>Dashboard Ringkas <span class="muted" style="font-weight:600; display:block; margin-top:8px">Pilih fungsi</span></h3>
-
-        <div style="margin-top:12px">
-          <button class="btn" onclick="show('monitor')">📡 Monitor Tanaman <span class="small">Ringkasan & nyahsembunyi</span></button>
-          <button class="btn" onclick="show('drone')">🚁 Monitor Drone <span class="small">Animasi drone & telemetry</span></button>
-          <button class="btn" onclick="show('pump')">💧 Kawal Pam Air <span class="small">Tekan ON / OFF</span></button>
-          <button class="btn" onclick="show('sensor')">🌡️ Suhu & Kelembapan <span class="small">Grafik live</span></button>
+      <!-- Back button wrapper (hidden on home) -->
+      <div id="backWrap" class="back-wrap">
+        <div class="back-btn" id="backBtn" role="button" aria-label="Kembali">
+          <span style="font-size:18px">←</span> <span>Kembali</span>
         </div>
       </div>
 
-      <!-- MONITOR tanaman -->
-      <div id="monitor" class="screen card" style="display:none">
-        <h3>Dashboard Ringkas <span class="pill" id="pumpStatus">OFF</span></h3>
-        <div class="muted" style="margin-top:8px">Ringkasan tanaman</div>
-
-        <!-- contoh ringkasan (anda boleh isi data sebenar) -->
-        <div style="margin-top:14px">
-          <div class="card" style="padding:14px; margin-bottom:10px">
-            <strong>Zona A — Kebun Kecil</strong>
-            <div style="display:flex; gap:12px; margin-top:12px">
-              <div style="flex:1">
-                <div class="muted">Suhu</div>
-                <div style="font-size:28px; font-weight:800">29.2 °C</div>
-              </div>
-              <div style="flex:1">
-                <div class="muted">Kelembapan</div>
-                <div style="font-size:28px; font-weight:800">57 %</div>
-              </div>
+      <!-- HOME screen -->
+      <section id="home" class="screen" aria-label="Home">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-weight:800;font-size:18px">Dashboard Ringkas</div>
+              <div class="muted" style="margin-top:6px">Pilih fungsi di bawah</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-weight:900;color:#fff;background:var(--accent-dark);padding:8px 12px;border-radius:10px;">LIVE</div>
             </div>
           </div>
+        </div>
 
-          <div class="card">
-            <h3>Monitor Tanah</h3>
-            <div class="muted">Cahaya & kelembapan tanah</div>
-            <div style="height:120px"></div>
+        <button class="btn" onclick="nav('monitor')">📡 Monitor Tanaman <small>Senarai tanaman & ringkasan</small></button>
+        <button class="btn" onclick="nav('drone')">🚁 Monitor Drone <small>Animasi & telemetry</small></button>
+        <button class="btn" onclick="nav('pump')">💧 Kawal Pam Air <small>Butang ON / OFF</small></button>
+        <button class="btn" onclick="nav('sensor')">🌡️ Suhu & Kelembapan <small>Grafik live</small></button>
+      </section>
+
+      <!-- MONITOR page -->
+      <section id="monitor" class="screen" style="display:none">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-weight:800;font-size:18px">Monitor Tanaman</div>
+            <div class="pill" id="pumpPill">OFF</div>
+          </div>
+          <div class="muted" style="margin-top:8px">Ringkasan & status zon</div>
+        </div>
+
+        <div class="card">
+          <div style="font-weight:800">Zona A — Kebun</div>
+          <div class="muted" style="margin-top:6px">Suhu & kelembapan ringkas</div>
+          <div style="display:flex;gap:12px;margin-top:12px">
+            <div style="flex:1">
+              <div class="muted">Suhu</div>
+              <div style="font-size:26px;font-weight:800">29.2 °C</div>
+            </div>
+            <div style="flex:1">
+              <div class="muted">Kelembapan</div>
+              <div style="font-size:26px;font-weight:800">57 %</div>
+            </div>
           </div>
         </div>
-      </div>
+
+        <div class="card">
+          <h3 style="margin:0 0 8px 0">Monitor Tanah</h3>
+          <div class="muted">Cahaya, kelembapan tanah & pH (contoh)</div>
+          <div style="height:120px;margin-top:12px;background:linear-gradient(#fff,#f7f7f7);border-radius:10px"></div>
+        </div>
+      </section>
 
       <!-- DRONE -->
-      <div id="drone" class="screen card" style="display:none">
-        <h3>Drone</h3>
-        <div class="muted">Animasi & telemetry</div>
-        <div style="height:120px; margin-top:12px; background:linear-gradient(#fff,#f7f7f7); border-radius:10px"></div>
-      </div>
+      <section id="drone" class="screen" style="display:none">
+        <div class="card">
+          <div style="font-weight:800;font-size:18px">Monitor Drone</div>
+          <div class="muted" style="margin-top:6px">Animasi drone & telemetry (simulated)</div>
+        </div>
+        <div class="card">
+          <div class="muted">Telemetry</div>
+          <div style="margin-top:8px">Altitude: <strong id="altVal">--</strong> m &nbsp;|&nbsp; Speed: <strong id="spdVal">--</strong> m/s &nbsp;|&nbsp; Battery: <strong id="batVal">--</strong>%</div>
+          <div style="margin-top:12px">
+            <button style="padding:10px 12px;border-radius:8px;border:0;background:var(--accent);color:#fff;font-weight:800;cursor:pointer" onclick="simulateDrone()">Start Sim</button>
+          </div>
+        </div>
+      </section>
 
       <!-- PUMP -->
-      <div id="pump" class="screen card" style="display:none">
-        <h3>Kawal Pam Air</h3>
-        <div class="muted">Tekan butang untuk ON / OFF</div>
-        <div style="margin-top:14px; display:flex; gap:8px">
-          <button id="btnOn" class="btn" style="flex:1; background:var(--accent); color:#fff; border-color:var(--accent);" onclick="pump('ON')">HIDUPKAN PAM</button>
-          <button id="btnOff" class="btn" style="flex:1; border-color:#aaa;" onclick="pump('OFF')">MATIKAN PAM</button>
-        </div>
-      </div>
-
-      <!-- SENSOR (suhu/kelembapan) -->
-      <div id="sensor" class="screen card" style="display:none">
-        <h3>Suhu (°C)</h3>
-        <div class="muted">Updated setiap 3s</div>
-        <div style="margin-top:12px" class="card">
-          <canvas id="tempChart"></canvas>
-          <div style="margin-top:8px; float:right"><span id="tempNow" style="font-weight:700">-- °C</span></div>
+      <section id="pump" class="screen" style="display:none">
+        <div class="card">
+          <div style="font-weight:800;font-size:18px">Kawal Pam Air</div>
+          <div class="muted" style="margin-top:6px">Tekan butang untuk hidup / matikan pam</div>
         </div>
 
-        <div style="height:12px"></div>
-
-        <h3>Kelembapan (%)</h3>
-        <div class="muted">Updated setiap 3s</div>
-        <div style="margin-top:12px" class="card">
-          <canvas id="humChart"></canvas>
-          <div style="margin-top:8px; float:right"><span id="humNow" style="font-weight:700">-- %</span></div>
+        <div class="card" style="display:flex;flex-direction:column;gap:12px;align-items:center">
+          <div id="pumpStatusLarge" style="font-weight:900;font-size:28px;color:var(--accent-dark)">OFF</div>
+          <div style="display:flex;gap:12px;width:100%">
+            <button id="btnPumpOn" style="flex:1;padding:12px;border-radius:10px;border:0;background:var(--accent);color:#fff;font-weight:800;cursor:pointer" onclick="setPump('ON')">HIDUPKAN PAM</button>
+            <button id="btnPumpOff" style="flex:1;padding:12px;border-radius:10px;border:1px solid #ddd;background:#fff;color:#333;cursor:pointer" onclick="setPump('OFF')">MATIKAN PAM</button>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <footer>© 2025 Hana AgroTech Sdn. Bhd.</footer>
+      <!-- SENSOR -->
+      <section id="sensor" class="screen" style="display:none">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-weight:800;font-size:18px">Suhu (°C)</div>
+            <div class="pill" id="tempNow">--°C</div>
+          </div>
+          <div class="chart" style="margin-top:10px"><canvas id="tempChart"></canvas></div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-weight:800;font-size:18px">Kelembapan (%)</div>
+            <div class="pill" id="humNow">--%</div>
+          </div>
+          <div class="chart" style="margin-top:10px"><canvas id="humChart"></canvas></div>
+        </div>
+      </section>
+
+      <footer class="site-foot">© 2020 Hana AgroTech Sdn. Bhd.</footer>
     </main>
   </div>
 
   <script>
-    /* Simple navigation: show(id) */
-    function show(id){
-      document.querySelectorAll('.screen').forEach(el=> el.style.display='none');
-      const el = document.getElementById(id);
-      if(el) el.style.display='block';
-      // show/hide back button: hide on home
-      document.getElementById('backBtn').style.display = (id === 'home') ? 'none' : 'block';
-      // update pump pill
-      updatePumpPill();
-      // scroll to top
-      window.scrollTo({top:0, behavior:'instant'});
-    }
-    // initial state
-    show('home');
-
-    /* Pump control (simulated) */
-    let pumpState = 'OFF';
-    function pump(state){
-      pumpState = state === 'ON' ? 'ON' : 'OFF';
-      // visual feedback
-      document.getElementById('pumpStatus').textContent = pumpState;
-      if(pumpState==='ON'){
-        document.getElementById('btnOn').style.opacity=1;
-        document.getElementById('btnOff').style.opacity=0.9;
+    // ---------- Navigation ----------
+    function nav(id){
+      // hide backWrap on home
+      const backWrap = document.getElementById('backWrap');
+      if(id === 'home'){
+        document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+        document.getElementById('home').style.display = 'block';
+        backWrap.style.display = 'none';
       } else {
-        document.getElementById('btnOn').style.opacity=0.7;
-        document.getElementById('btnOff').style.opacity=1;
+        document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+        const el = document.getElementById(id);
+        if(el) el.style.display = 'block';
+        backWrap.style.display = 'block';
       }
-      // tiny alert to show action (remove for production)
-      //alert('Pam ' + pumpState);
-    }
-    function updatePumpPill(){
-      const pill = document.getElementById('pumpStatus');
-      pill.textContent = pumpState;
-      pill.style.background = (pumpState==='ON')? 'var(--accent)' : '#888';
+      // update pump pill if present
+      updatePumpUI();
     }
 
-    /* --- Simple chart helper (vanilla canvas) --- */
+    // Back button click
+    document.getElementById('backBtn').addEventListener('click', function(){ nav('home'); });
+
+    // initial: show home
+    nav('home');
+
+    // ---------- Pump control (simulated) ----------
+    let pumpState = 'OFF';
+    function setPump(state){
+      pumpState = (state === 'ON') ? 'ON' : 'OFF';
+      updatePumpUI();
+      // if real API exists, replace with fetch POST:
+      // fetch('/api/pump', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({state})});
+    }
+    function updatePumpUI(){
+      const pill = document.getElementById('pumpPill');
+      if(pill) pill.textContent = pumpState;
+      const big = document.getElementById('pumpStatusLarge');
+      if(big) big.textContent = pumpState;
+      // update styling if desired
+      if(pumpState==='ON'){
+        document.getElementById('btnPumpOn').style.opacity = '0.8';
+        document.getElementById('btnPumpOff').style.opacity = '1';
+      } else {
+        document.getElementById('btnPumpOn').style.opacity = '1';
+        document.getElementById('btnPumpOff').style.opacity = '0.8';
+      }
+    }
+
+    // ---------- Drone simulation ----------
+    function simulateDrone(){
+      let alt = 120, sp = 12, bat = 89;
+      const id = setInterval(()=>{
+        alt = Math.max(2, Math.round((alt + (Math.random()-0.5)*8)*10)/10);
+        sp = Math.max(0.5, Math.round((sp + (Math.random()-0.5)*4)*10)/10);
+        bat = Math.max(1, Math.round((bat - Math.random()*1.2)*10)/10);
+        document.getElementById('altVal').textContent = alt;
+        document.getElementById('spdVal').textContent = sp;
+        document.getElementById('batVal').textContent = bat;
+        if(bat < 5){ clearInterval(id); }
+      }, 800);
+      setTimeout(()=>clearInterval(id), 12000);
+    }
+
+    // ---------- Charts (vanilla canvas) ----------
     function drawLine(canvas, data, color){
       if(!canvas) return;
       const ctx = canvas.getContext('2d');
-      const w = canvas.width = canvas.offsetWidth * devicePixelRatio;
-      const h = canvas.height = (canvas.offsetHeight || 70) * devicePixelRatio;
+      const DPR = window.devicePixelRatio || 1;
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      canvas.width = Math.round(w * DPR);
+      canvas.height = Math.round(h * DPR);
+      ctx.scale(DPR, DPR);
       ctx.clearRect(0,0,w,h);
-      ctx.lineWidth = 3 * devicePixelRatio;
-      ctx.strokeStyle = color;
+
+      const max = Math.max(...data), min = Math.min(...data);
       ctx.beginPath();
-      const min = Math.min(...data), max = Math.max(...data);
       data.forEach((v,i)=>{
-        const x = i/(data.length-1) * (w-10) + 5;
-        const y = h - ((v - min) / (max - min || 1)) * (h - 20) - 10;
+        const x = (i/(data.length-1)) * (w - 10) + 5;
+        const y = h - ((v - min) / ((max-min) || 1)) * (h - 18) - 9;
         if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
       });
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = color;
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
       ctx.stroke();
 
-      // fill
-      ctx.lineTo(w-5, h-10); ctx.lineTo(5, h-10); ctx.closePath();
+      // fill under curve
+      ctx.lineTo(w - 5, h - 6);
+      ctx.lineTo(5, h - 6);
+      ctx.closePath();
       ctx.fillStyle = hexToRgba(color, 0.08);
       ctx.fill();
 
-      // small circle points
+      // draw points
       ctx.fillStyle = color;
       data.forEach((v,i)=>{
-        const x = i/(data.length-1) * (w-10) + 5;
-        const y = h - ((v - min) / (max - min || 1)) * (h - 20) - 10;
-        ctx.beginPath(); ctx.arc(x,y,3*devicePixelRatio,0,Math.PI*2); ctx.fill();
+        const x = (i/(data.length-1)) * (w - 10) + 5;
+        const y = h - ((v - min) / ((max-min) || 1)) * (h - 18) - 9;
+        ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fill();
       });
     }
     function hexToRgba(hex, a){
@@ -282,38 +303,48 @@ body {
       return `rgba(${r},${g},${b},${a})`;
     }
 
-    /* simulated sensor data */
-    let tempData = [25,26,27,27,28,28];
-    let humData = [60,61,62,63,62,62];
+    // sensor data simulation
+    let tempData = [25,26,27,27.5,28,28.3,28.8];
+    let humData = [55,58,60,62,63.2,62,61];
 
     function tickSensors(){
-      tempData.push( Math.round((tempData[tempData.length-1] + (Math.random()-0.5)*1.5)*10)/10 );
-      humData.push( Math.round((humData[humData.length-1] + (Math.random()-0.5)*2)*10)/10 );
+      tempData.push(Math.round((tempData[tempData.length-1] + (Math.random()-0.5)*1.2)*10)/10);
+      humData.push(Math.round((humData[humData.length-1] + (Math.random()-0.5)*2.2)*10)/10);
       if(tempData.length>12) tempData.shift();
       if(humData.length>12) humData.shift();
 
-      document.getElementById('tempNow').textContent = tempData[tempData.length-1] + '°C';
-      document.getElementById('humNow').textContent = humData[humData.length-1] + '%';
+      // update pills
+      const t = tempData[tempData.length-1];
+      const h = humData[humData.length-1];
+      const tempNow = document.getElementById('tempNow');
+      const humNow = document.getElementById('humNow');
+      if(tempNow) tempNow.textContent = t.toFixed(1) + '°C';
+      if(humNow) humNow.textContent = h.toFixed(1) + '%';
 
+      // draw where present
       drawLine(document.getElementById('tempChart'), tempData, '#2f7d32');
       drawLine(document.getElementById('humChart'), humData, '#2f7d32');
     }
 
+    // start sensors
     window.addEventListener('load', ()=>{
-      // small delay to allow canvas sizing
-      setTimeout(()=>{ tickSensors(); }, 300);
+      // initial render
+      tickSensors();
       setInterval(tickSensors, 3000);
 
-      // register service worker (if present)
+      // register service worker if exists
       if('serviceWorker' in navigator){
         navigator.serviceWorker.register('sw.js').then(()=> {
-          //console.log('sw registered');
-        }).catch(()=>{ /* ignore */ });
+          console.log('sw registered');
+        }).catch(err=>{
+          console.log('sw register failed', err);
+        });
       }
     });
 
-    /* ensure backBtn hidden on home initial */
-    document.getElementById('backBtn').style.display='none';
+    // ensure navigation initial
+    nav('home');
   </script>
+
 </body>
 </html>
