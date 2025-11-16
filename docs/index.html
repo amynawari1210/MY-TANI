@@ -10,17 +10,26 @@
   <link rel="manifest" href="manifest.json">
 
   <style>
-    :root{
-      --accent:#2f7d32;
-      --card:#fff;
-      --text:#0b2540;
-      --muted:#666;
-      --bg-img: url('bg.jpg'); /* <-- letakkan bg.jpg di /docs */
-    }
-    /* reset */
-    *{box-sizing:border-box}
+/* FULLSCREEN BACKGROUND */
+.bg-hero {
+    background: url('./bg.jpg') center center / cover no-repeat fixed;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    filter: brightness(0.55) blur(1.5px);
+}
+
+/* Pastikan content boleh scroll */
+body {
+    background: transparent !important;
+}
+</style>
     html,body{height:100%; margin:0; font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
     body{
+  <body data-theme="green">
+    <div class="bg-hero"></div>
       background: #f2f2f2;
       color:var(--text);
       -webkit-font-smoothing:antialiased;
